@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/nav_transaction"
-        android:name="com.example.myapplication4.ui.transaction.TransactionFragment"
+        android:name="com.example.myapplication4.ui.transaccion.TransaccionFragment"
         android:label="@string/menu_transaction"
-        tools:layout="@layout/fragment_transaction" />
+        tools:layout="@layout/fragment_transaccion" />
 
     <fragment
         android:id="@+id/nav_category"
-        android:name="com.example.myapplication4.ui.category.CategoryFragment"
+        android:name="com.example.myapplication4.ui.categoria.CategoriaFragment"
         android:label="@string/menu_category"
-        tools:layout="@layout/fragment_category" />
+        tools:layout="@layout/fragment_categoria" />
 </navigation>

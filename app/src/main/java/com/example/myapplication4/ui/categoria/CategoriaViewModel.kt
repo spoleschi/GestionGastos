@@ -1,10 +1,10 @@
-package com.example.myapplication4.ui.category
+package com.example.myapplication4.ui.categoria
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class CategoryViewModel : ViewModel() {
+class CategoriaViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is Category Fragment"

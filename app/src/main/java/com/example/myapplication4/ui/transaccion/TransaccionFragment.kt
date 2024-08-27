@@ -1,4 +1,4 @@
-package com.example.myapplication4.ui.category
+package com.example.myapplication4.ui.transaccion
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.myapplication4.databinding.FragmentCategoryBinding
+import com.example.myapplication4.databinding.FragmentTransaccionBinding
 
-class CategoryFragment : Fragment() {
+class TransaccionFragment : Fragment() {
 
-    private var _binding: FragmentCategoryBinding? = null
+    private var _binding: FragmentTransaccionBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +22,14 @@ class CategoryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val slideshowViewModel =
-            ViewModelProvider(this).get(CategoryViewModel::class.java)
+        val galleryViewModel =
+            ViewModelProvider(this).get(TransaccionViewModel::class.java)
 
-        _binding = FragmentCategoryBinding.inflate(inflater, container, false)
+        _binding = FragmentTransaccionBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textCategory
-        slideshowViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textGallery
+        galleryViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root
