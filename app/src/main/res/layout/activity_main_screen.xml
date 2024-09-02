@@ -95,54 +95,54 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             android:padding="8dp">
 
             <Button
                 android:id="@+id/dayButton"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Día"
-                android:textSize="12sp"
-                style="?attr/materialButtonOutlinedStyle"/>
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/weekButton"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Semana"
-                android:textSize="12sp"
-                style="?attr/materialButtonOutlinedStyle"/>
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/monthButton"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Mes"
-                android:textSize="12sp"
-                style="?attr/materialButtonOutlinedStyle"/>
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/yearButton"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Año"
-                android:textSize="12sp"
-                style="?attr/materialButtonOutlinedStyle"/>
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/periodButton"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Período"
-                android:textSize="12sp"
-                style="?attr/materialButtonOutlinedStyle"/>
+                android:textSize="12sp" />
 
         </LinearLayout>
 
