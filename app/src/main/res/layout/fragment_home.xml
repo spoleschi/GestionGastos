@@ -24,7 +24,7 @@
         android:id="@+id/dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="20/08/24"
+
         android:textSize="16sp"
         app:layout_constraintTop_toTopOf="@id/topBar"
         app:layout_constraintBottom_toBottomOf="@id/topBar"
