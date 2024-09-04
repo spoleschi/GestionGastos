@@ -2,6 +2,7 @@ package com.example.myapplication4
 
 import android.os.Bundle
 import android.view.Menu
+import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -12,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication4.databinding.ActivityMainBinding
+import java.math.BigDecimal;
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,6 +45,17 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        val nuevoUser = Usuario(1,"a","b","c",BigDecimal(10));
+
+        val labelSaldo: TextView = findViewById(R.id.totalLabel);
+
+        labelSaldo.text = "$" + nuevoUser.saldo.toString();
+
+        nuevoUser.actulizarSaldo(BigDecimal(50));
+
+        //Se tiene que volver a definir el valor del label
+        labelSaldo.text = "$" + nuevoUser.saldo.toString();
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
