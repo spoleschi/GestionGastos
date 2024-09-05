@@ -3,11 +3,23 @@ package com.example.gestiongastos
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myfirstapplication.CategoriesAdapter
+import com.example.myfirstapplication.Category
 import com.google.android.material.tabs.TabLayout
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 class MainScreenActivity : AppCompatActivity() {
+
+    private val categories = listOf(
+        Category.Alimentos,
+        Category.Transporte,
+        Category.Recreacion
+    )
+    private lateinit var dateText: TextView
     private lateinit var tabLayout: TabLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var dayButton: Button
@@ -15,6 +27,8 @@ class MainScreenActivity : AppCompatActivity() {
     private lateinit var monthButton: Button
     private lateinit var yearButton: Button
     private lateinit var periodButton: Button
+
+    private lateinit var categoriesAdapter: CategoriesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,11 +40,37 @@ class MainScreenActivity : AppCompatActivity() {
         weekButton = findViewById(R.id.weekButton)
         monthButton = findViewById(R.id.monthButton)
         yearButton = findViewById(R.id.yearButton)
-        periodButton = findViewById(R.id.periodButton)
+
+        // Obtener referencia al TextView
+        dateText = findViewById(R.id.dateText)
+
+        // Obtener la fecha actual y formatearla
+        val currentDate = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("dd/MM/yy")
+        val formattedDate = dateFormat.format(currentDate)
+
+        // Asignar la fecha formateada al TextView
+        dateText.text = formattedDate
+
+        // Aquí deberíamos agregar lógica adicional para interactuar con los elementos de la vista
+        // Por ejemplo, configurar el RecyclerView, manejar los clics en los botones, etc.
+
+        // Ejemplo: Configurar el RecyclerView
+        //val expensesRecyclerView = binding.expensesRecyclerView
+        // ... configurar el adaptador y otros parámetros del RecyclerView
 
         setupTabLayout()
         setupRecyclerView()
         setupPeriodButtons()
+
+        initUI()
+    }
+
+    private fun initUI() {
+        categoriesAdapter = CategoriesAdapter(categories)
+        recyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = categoriesAdapter
     }
 
     private fun setupTabLayout() {
@@ -51,7 +91,7 @@ class MainScreenActivity : AppCompatActivity() {
     }
 
     private fun setupPeriodButtons() {
-        val buttons = listOf(dayButton, weekButton, monthButton, yearButton, periodButton)
+        val buttons = listOf(dayButton, weekButton, monthButton, yearButton)
         buttons.forEach { button ->
             button.setOnClickListener {
                 // Actualizar la vista según el período seleccionado

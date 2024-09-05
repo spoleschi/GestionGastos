@@ -135,15 +135,6 @@
                 android:text="Año"
                 android:textSize="12sp" />
 
-            <Button
-                android:id="@+id/periodButton"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Período"
-                android:textSize="12sp" />
-
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
