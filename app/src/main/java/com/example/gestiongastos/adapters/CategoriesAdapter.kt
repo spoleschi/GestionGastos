@@ -1,9 +1,11 @@
-package com.example.myfirstapplication
+package com.example.gestiongastos.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gestiongastos.R
+import com.example.gestiongastos.viewHolders.CategoriesViewHolder
+import com.example.myfirstapplication.Category
 
 class CategoriesAdapter(private val categories: List<Category>) :
     RecyclerView.Adapter<CategoriesViewHolder>() {
