@@ -12,6 +12,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication4.Clases.Categoria
+import com.example.myapplication4.Clases.Usuario
+import com.example.myapplication4.adapters.CategoriesAdapter
 import com.example.myapplication4.databinding.ActivityMainBinding
 import java.math.BigDecimal;
 
@@ -19,6 +24,29 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
+    private val categories = listOf(
+        Categoria(
+            "Alimentos",
+            "",
+            "Verde",
+            "Gasto"
+        ),
+        Categoria(
+            "Trasporte",
+            "",
+            "Amarillo",
+            "Gasto"
+        ),
+        Categoria(
+            "Recreación",
+            "",
+            "Azul",
+            "Gasto"
+        )
+    )
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var categoriesAdapter: CategoriesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,16 +74,24 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val nuevoUser = Usuario(1,"a","b","c",BigDecimal(10));
+        initUI()
 
-        val labelSaldo: TextView = findViewById(R.id.totalLabel);
+        val nuevoUser = Usuario(
+            1,
+            "a",
+            "b",
+            "c",
+            BigDecimal(10)
+        );
 
-        labelSaldo.text = "$" + nuevoUser.saldo.toString();
+        val totalAmount: TextView = findViewById(R.id.totalAmount);
+
+        totalAmount.text = "$" + nuevoUser.saldo.toString();
 
         nuevoUser.actulizarSaldo(BigDecimal(50));
 
-        //Se tiene que volver a definir el valor del label
-        labelSaldo.text = "$" + nuevoUser.saldo.toString();
+        //Se tiene que volver a definir el valor del textView
+        totalAmount.text = "$" + nuevoUser.saldo.toString();
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -67,5 +103,13 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private fun initUI() {
+        recyclerView = findViewById(R.id.expensesRecyclerView)
+        categoriesAdapter = CategoriesAdapter(categories)
+        recyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = categoriesAdapter
     }
 }

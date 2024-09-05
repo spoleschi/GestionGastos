@@ -1,8 +1,7 @@
-package com.example.myapplication4;
+package com.example.myapplication4.Clases;
 import java.util.ArrayList;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Locale;
 
 public class Gasto extends Transaccion{
     private int cantCuotas;

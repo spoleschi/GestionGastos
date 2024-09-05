@@ -13,6 +13,9 @@ class CategoriaFragment : Fragment() {
 
     private var _binding: FragmentCategoriaBinding? = null
 
+
+
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!

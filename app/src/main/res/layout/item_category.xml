@@ -24,7 +24,7 @@
         </TextView>
 
         <View
-            android:id="@+id/divader"
+            android:id="@+id/divider"
             android:layout_width="match_parent"
             tools:background="@color/white"
             android:layout_height="2dp"/>

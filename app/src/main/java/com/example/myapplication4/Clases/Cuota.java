@@ -1,4 +1,4 @@
-package com.example.myapplication4;
+package com.example.myapplication4.Clases;
 import java.time.LocalDate;
 public class Cuota {
     private int nroCuota;

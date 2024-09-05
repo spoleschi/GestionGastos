@@ -3,9 +3,9 @@ package com.example.myapplication4.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication4.Categoria
-import com.example.myapplication4.R
+import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.viewHolders.CategoriesViewHolder
+import com.example.myapplication4.R
 
 class CategoriesAdapter(private val categories:List<Categoria>)
     :RecyclerView.Adapter<CategoriesViewHolder>(){
