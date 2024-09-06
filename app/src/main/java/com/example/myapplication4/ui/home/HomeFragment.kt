@@ -7,11 +7,39 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication4.Clases.Categoria
+import com.example.myapplication4.R
+import com.example.myapplication4.adapters.CategoriesAdapter
 import com.example.myapplication4.databinding.FragmentHomeBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 class HomeFragment : Fragment() {
+
+    private val categories = listOf(
+        Categoria(
+            "Alimentos",
+            "",
+            "Verde",
+            "Gasto"
+        ),
+        Categoria(
+            "Trasporte",
+            "",
+            "Amarillo",
+            "Gasto"
+        ),
+        Categoria(
+            "Recreación",
+            "",
+            "Azul",
+            "Gasto"
+        )
+    )
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var categoriesAdapter: CategoriesAdapter
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -27,6 +55,17 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initUI()
+
+    }
+
+    private fun initUI() {
+        recyclerView = binding.expensesRecyclerView
+        categoriesAdapter = CategoriesAdapter(categories)
+        recyclerView.layoutManager =
+            LinearLayoutManager( recyclerView.context, LinearLayoutManager.VERTICAL, false)
+        recyclerView.adapter = categoriesAdapter
 
         // Obtener referencia al TextView
         val dateText = binding.dateText

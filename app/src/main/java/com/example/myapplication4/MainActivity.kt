@@ -25,28 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-    private val categories = listOf(
-        Categoria(
-            "Alimentos",
-            "",
-            "Verde",
-            "Gasto"
-        ),
-        Categoria(
-            "Trasporte",
-            "",
-            "Amarillo",
-            "Gasto"
-        ),
-        Categoria(
-            "Recreación",
-            "",
-            "Azul",
-            "Gasto"
-        )
-    )
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var categoriesAdapter: CategoriesAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,8 +52,6 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-        initUI()
 
         val nuevoUser = Usuario(
             1,
@@ -105,11 +82,5 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    private fun initUI() {
-        recyclerView = findViewById(R.id.expensesRecyclerView)
-        categoriesAdapter = CategoriesAdapter(categories)
-        recyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = categoriesAdapter
-    }
+
 }
