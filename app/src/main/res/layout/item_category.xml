@@ -11,6 +11,7 @@
     app:cardBackgroundColor="@color/material_dynamic_neutral_variant60">
 
     <LinearLayout
+        android:id="@+id/itemLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -21,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Prueba"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="20sp">
         </TextView>
@@ -29,7 +30,7 @@
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            tools:background="@color/white"
+            android:background="@color/white"
             android:layout_height="2dp"/>
 
     </LinearLayout>

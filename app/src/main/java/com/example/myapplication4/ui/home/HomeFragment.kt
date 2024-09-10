@@ -22,19 +22,19 @@ class HomeFragment : Fragment() {
         Categoria(
             "Alimentos",
             "",
-            "Verde",
+            "3ec54a",
             "Gasto"
         ),
         Categoria(
             "Trasporte",
             "",
-            "Amarillo",
+            "ffeb3c",
             "Gasto"
         ),
         Categoria(
             "Recreación",
             "",
-            "Azul",
+            "287fd2",
             "Gasto"
         )
     )

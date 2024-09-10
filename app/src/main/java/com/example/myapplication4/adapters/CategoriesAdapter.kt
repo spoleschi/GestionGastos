@@ -21,6 +21,7 @@ class CategoriesAdapter(private val categories:List<Categoria>)
     override fun getItemCount() = categories.size
 
     override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {
-        holder.render(categories[position])
+//        holder.render(categories[position])
+        holder.render(categories[position], holder.itemView)
     }
 }

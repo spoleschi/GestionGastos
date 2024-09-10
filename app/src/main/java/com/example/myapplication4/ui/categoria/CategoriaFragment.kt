@@ -1,5 +1,6 @@
 package com.example.myapplication4.ui.categoria
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication4.Clases.Categoria
+import com.example.myapplication4.WelcomeActivity
 import com.example.myapplication4.adapters.CategoriesAdapter
 import com.example.myapplication4.databinding.FragmentCategoriaBinding
 import com.google.android.material.tabs.TabLayout
@@ -20,19 +22,19 @@ class CategoriaFragment : Fragment() {
         Categoria(
             "Alimentos",
             "",
-            "Verde",
+            "3ec54a",
             "Gasto"
         ),
         Categoria(
             "Trasporte",
             "",
-            "Amarillo",
+            "ffeb3c",
             "Gasto"
         ),
         Categoria(
             "Recreación",
             "",
-            "Azul",
+            "287fd2",
             "Gasto"
         )
     )
@@ -58,6 +60,7 @@ class CategoriaFragment : Fragment() {
         }
 
         // Setup RecyclerView
+
         val recyclerView = binding!!.recyclerView // Access using !! after null check
         categoriesAdapter = CategoriesAdapter(categories)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
