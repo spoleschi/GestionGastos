@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.myapplication4.MainActivity
 import com.example.myapplication4.databinding.FragmentTransaccionBinding
 
 class TransaccionFragment : Fragment() {
@@ -32,6 +33,14 @@ class TransaccionFragment : Fragment() {
         galleryViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        var buttonGuardar = binding.buttonGuardarGasto
+
+        buttonGuardar.setOnClickListener{
+            var montoInput = binding.inputMonto.text.toString().toInt()
+            //MainActivity.registrarNuevoGasto(montoInput) //Por ahora solo paso el monto jaja
+        }
+
         return root
     }
 
