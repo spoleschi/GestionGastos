@@ -12,20 +12,13 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.Clases.Usuario
-import com.example.myapplication4.adapters.CategoriesAdapter
 import com.example.myapplication4.databinding.ActivityMainBinding
-import java.math.BigDecimal;
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,14 +51,14 @@ class MainActivity : AppCompatActivity() {
             "a",
             "b",
             "c",
-            BigDecimal(10)
+            10f
         );
 
         val totalAmount: TextView = findViewById(R.id.totalAmount);
 
         totalAmount.text = "$" + nuevoUser.saldo.toString();
 
-        nuevoUser.actulizarSaldo(BigDecimal(50));
+        nuevoUser.actualizarSaldo(50f);
 
         //Se tiene que volver a definir el valor del textView
         totalAmount.text = "$" + nuevoUser.saldo.toString();
