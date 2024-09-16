@@ -78,6 +78,8 @@ class HomeFragment : Fragment() {
         // Asignar la fecha formateada al TextView
         dateText.text = formattedDate
 
+        val monto = binding.totalAmount;
+
         // Aquí deberíamos agregar lógica adicional para interactuar con los elementos de la vista
         // Por ejemplo, configurar el RecyclerView, manejar los clics en los botones, etc.
 
