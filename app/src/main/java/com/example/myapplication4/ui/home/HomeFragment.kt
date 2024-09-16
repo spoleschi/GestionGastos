@@ -18,28 +18,28 @@ import java.util.*
 
 class HomeFragment : Fragment() {
 
-    private val categories = listOf(
-        Categoria(
-            "Alimentos",
-            "",
-            "3ec54a",
-            "Gasto"
-        ),
-        Categoria(
-            "Trasporte",
-            "",
-            "ffeb3c",
-            "Gasto"
-        ),
-        Categoria(
-            "Recreación",
-            "",
-            "287fd2",
-            "Gasto"
-        )
-    )
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var categoriesAdapter: CategoriesAdapter
+//    private val categories = listOf(
+//        Categoria(
+//            "Alimentos",
+//            "",
+//            "3ec54a",
+//            "Gasto"
+//        ),
+//        Categoria(
+//            "Trasporte",
+//            "",
+//            "ffeb3c",
+//            "Gasto"
+//        ),
+//        Categoria(
+//            "Recreación",
+//            "",
+//            "287fd2",
+//            "Gasto"
+//        )
+//    )
+//    private lateinit var recyclerView: RecyclerView
+//    private lateinit var categoriesAdapter: CategoriesAdapter
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -61,11 +61,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun initUI() {
-        recyclerView = binding.expensesRecyclerView
-        categoriesAdapter = CategoriesAdapter(categories)
-        recyclerView.layoutManager =
-            LinearLayoutManager( recyclerView.context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = categoriesAdapter
+//        recyclerView = binding.expensesRecyclerView
+//        categoriesAdapter = CategoriesAdapter(categories)
+//        recyclerView.layoutManager =
+//            LinearLayoutManager( recyclerView.context, LinearLayoutManager.VERTICAL, false)
+//        recyclerView.adapter = categoriesAdapter
 
         // Obtener referencia al TextView
         val dateText = binding.dateText

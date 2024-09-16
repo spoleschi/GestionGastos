@@ -10,4 +10,10 @@
     <string name="menu_home">Home</string>
     <string name="menu_transaction">Add New Transaction</string>
     <string name="menu_category">Add New Category</string>
+
+    <string-array name="category_types">
+        <item>Gasto</item>
+        <item>Ingreso</item>
+    </string-array>
+
 </resources>
