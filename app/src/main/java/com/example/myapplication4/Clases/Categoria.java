@@ -1,16 +1,16 @@
 package com.example.myapplication4.Clases;
-
+//Agregar id a la categoría
 public class Categoria {
     private String nombre;
     private String desc;
     private String color;
-    private String tipoCategoria;
+    private String tipo;
 
-    public Categoria(String nombre, String desc, String color, String tipoCategoria){
+    public Categoria(String nombre, String desc, String color, String tipo){
         this.nombre = nombre;
         this.desc = desc;
         this.color = color;
-        this.tipoCategoria = tipoCategoria;
+        this.tipo = tipo;
     }
 
     // Getters
@@ -26,8 +26,8 @@ public class Categoria {
         return color;
     }
 
-    public String getTipoCategoria() {
-        return tipoCategoria;
+    public String getTipo() {
+        return tipo;
     }
 
     // Setters
@@ -43,7 +43,7 @@ public class Categoria {
         this.color = color;
     }
 
-    public void setTipoCategoria(String tipoCategoria) {
-        this.tipoCategoria = tipoCategoria;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

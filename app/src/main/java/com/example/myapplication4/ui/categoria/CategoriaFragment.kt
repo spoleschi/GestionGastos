@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication4.CategoryEditActivity
 import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.WelcomeActivity
 import com.example.myapplication4.adapters.CategoriesAdapter
@@ -62,7 +63,14 @@ class CategoriaFragment : Fragment() {
         // Setup RecyclerView
 
         val recyclerView = binding!!.recyclerView // Access using !! after null check
-        categoriesAdapter = CategoriesAdapter(categories)
+//        categoriesAdapter = CategoriesAdapter(categories)
+
+        categoriesAdapter = CategoriesAdapter(categories) { categoria ->
+            // Aquí manejamos el clic en una categoría
+            openCategoryEditActivity(categoria)
+        }
+
+
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
         recyclerView.adapter = categoriesAdapter
 
@@ -79,6 +87,16 @@ class CategoriaFragment : Fragment() {
 
     private fun setupTabLayout(tabLayout: TabLayout) {
         // ... (same as before)
+    }
+
+    private fun openCategoryEditActivity(categoria: Categoria) {
+        val intent = Intent(activity, CategoryEditActivity::class.java).apply {
+//            putExtra("CATEGORY_ID", categoria.id) // Asumiendo que Categoria tiene un id
+            putExtra("CATEGORY_NAME", categoria.nombre)
+            putExtra("CATEGORY_COLOR", categoria.color)
+            putExtra("CATEGORY_TYPE", categoria.tipo)
+        }
+        startActivity(intent)
     }
 
     override fun onDestroyView() {

@@ -61,11 +61,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun initUI() {
-        recyclerView = binding.expensesRecyclerView
-        categoriesAdapter = CategoriesAdapter(categories)
-        recyclerView.layoutManager =
-            LinearLayoutManager( recyclerView.context, LinearLayoutManager.VERTICAL, false)
-        recyclerView.adapter = categoriesAdapter
+//        recyclerView = binding.expensesRecyclerView
+//        categoriesAdapter = CategoriesAdapter(categories)
+//        recyclerView.layoutManager =
+//            LinearLayoutManager( recyclerView.context, LinearLayoutManager.VERTICAL, false)
+//        recyclerView.adapter = categoriesAdapter
 
         // Obtener referencia al TextView
         val dateText = binding.dateText
