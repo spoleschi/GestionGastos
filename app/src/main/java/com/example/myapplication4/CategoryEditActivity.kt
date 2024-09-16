@@ -17,7 +17,7 @@ class CategoryEditActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Recuperar los datos de la categoría
-//        val categoryId = intent.getStringExtra("CATEGORY_ID") ?: ""
+        val categoryId = intent.getStringExtra("CATEGORY_ID") ?: ""
         val categoryName = intent.getStringExtra("CATEGORY_NAME") ?: ""
         val categoryColor = intent.getStringExtra("CATEGORY_COLOR") ?: ""
         val categoryType = intent.getStringExtra("CATEGORY_TYPE") ?: ""

@@ -21,18 +21,21 @@ class CategoriaFragment : Fragment() {
 
     private val categories = listOf(
         Categoria(
+            1,
             "Alimentos",
             "",
             "3ec54a",
             "Gasto"
         ),
         Categoria(
+            2,
             "Trasporte",
             "",
             "ffeb3c",
             "Gasto"
         ),
         Categoria(
+            3,
             "Recreación",
             "",
             "287fd2",
@@ -91,7 +94,7 @@ class CategoriaFragment : Fragment() {
 
     private fun openCategoryEditActivity(categoria: Categoria) {
         val intent = Intent(activity, CategoryEditActivity::class.java).apply {
-//            putExtra("CATEGORY_ID", categoria.id) // Asumiendo que Categoria tiene un id
+            putExtra("CATEGORY_ID", categoria.id) // Asumiendo que Categoria tiene un id
             putExtra("CATEGORY_NAME", categoria.nombre)
             putExtra("CATEGORY_COLOR", categoria.color)
             putExtra("CATEGORY_TYPE", categoria.tipo)
