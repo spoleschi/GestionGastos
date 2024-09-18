@@ -70,3 +70,4 @@ class TransaccionViewModel : ViewModel() {
 enum class TransactionType {
     EXPENSE, INCOME
 }
+

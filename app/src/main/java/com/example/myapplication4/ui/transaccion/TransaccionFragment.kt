@@ -20,7 +20,6 @@ import com.google.android.material.tabs.TabLayout
 class TransaccionFragment : Fragment() {
 
     private var _binding: FragmentTransaccionBinding? = null
-
     private val binding get() = _binding!!
     private lateinit var viewModel: TransaccionViewModel
     private lateinit var categoryAdapter: CategoryAdapter

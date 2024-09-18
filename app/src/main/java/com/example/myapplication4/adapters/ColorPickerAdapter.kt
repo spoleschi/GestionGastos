@@ -20,7 +20,7 @@ class ColorPickerAdapter(
         fun bind(color: String, onColorSelected: (String) -> Unit) {
 //            colorView.setBackgroundColor(Color.parseColor(color))
 //            itemView.setOnClickListener { onColorSelected(color) }
-            //Modifico porque los colorPickers se veían cuadrados. Creo un crawable para cada color...
+            //Modifico porque los colorPickers se veían cuadrados. Creo un drawable para cada color...
             val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.circle_shape) as GradientDrawable
             drawable.setColor(Color.parseColor(color))
             colorView.background = drawable

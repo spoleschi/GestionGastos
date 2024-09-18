@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication4.CategoryEditActivity
@@ -75,6 +76,7 @@ class CategoriaFragment : Fragment() {
 
 
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
+//        recyclerView.layoutManager = GridLayoutManager(recyclerView.context,4)
         recyclerView.adapter = categoriesAdapter
 
         // Manejar el clic en el botón flotante
