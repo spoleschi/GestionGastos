@@ -71,7 +71,7 @@ class CategoriaViewModel : ViewModel() {
     private fun loadInitialCategories() {
         val initialExpenseCategories = listOf(
             Categoria(1, "Alimentos", "", "#3EC54A", "Gasto"),
-            Categoria(2, "Trasporte", "", "#FFEB3c", "Gasto"),
+            Categoria(2, "Trasporte", "", "#FFEB3C", "Gasto"),
             Categoria(3, "Ocio", "", "#800080", "Gasto"),
             Categoria(4,"Salud", "", "#FF0000","Gasto"),
             Categoria(5,"Casa", "", "#287FD2","Gasto"),

@@ -1,5 +1,6 @@
 package com.example.myapplication4.ui.categoria
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication4.CategoryEditActivity
 import com.example.myapplication4.Clases.Categoria
+import com.example.myapplication4.R
 import com.example.myapplication4.WelcomeActivity
 import com.example.myapplication4.adapters.CategoriesAdapter
 import com.example.myapplication4.databinding.FragmentCategoriaBinding
@@ -40,10 +42,18 @@ class CategoriaFragment : Fragment() {
         val fabCreate = binding!!.fabCreate
         fabCreate.setOnClickListener {
             // Navegar a la pantalla de creación de categoría
+            showDialog()
             Toast.makeText(fabCreate.context, "Toque el boton de agragar categoría", Toast.LENGTH_SHORT).show()
         }
 
         return binding!!.root
+    }
+
+    private fun showDialog() {
+        val context = requireContext()
+        val dialog = Dialog(context)
+        dialog.setContentView(R.layout.dialog_category_edit)
+        dialog.show()
     }
 
     private fun setupRecyclerView() {

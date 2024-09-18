@@ -1,5 +1,6 @@
 package com.example.myapplication4
 
+import android.app.Dialog
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -100,5 +101,11 @@ class CategoryEditActivity : AppCompatActivity() {
 
         // Después de guardar, cierra la actividad
         finish()
+    }
+
+    private fun showDialog(){
+        val dialog = Dialog(this)
+        dialog.setContentView((R.layout.dialog_category_edit))
+        dialog.show()
     }
 }
