@@ -8,8 +8,8 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_transaction">Add New Transaction</string>
-    <string name="menu_category">Add New Category</string>
+    <string name="menu_transaction">Transacción</string>
+    <string name="menu_category">Categoría</string>
 
     <string-array name="category_types">
         <item>Gasto</item>

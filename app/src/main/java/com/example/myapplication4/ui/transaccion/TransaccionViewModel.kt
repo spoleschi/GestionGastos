@@ -32,13 +32,15 @@ class TransaccionViewModel : ViewModel() {
     init {
         // Inicializar con categorías de ejemplo
         _categories.value = listOf(
-            Categoria(1,"Salud", "","#FF0000","Gasto"),
-            Categoria(2,"Ocio", "","#00FF00","Gasto"),
-            Categoria(3,"Casa", "","#0000FF","Gasto"),
-            Categoria(4,"Café", "","#FFFF00","Gasto"),
-            Categoria(5,"Educación","", "#FF00FF","Gasto"),
-            Categoria(6,"Regalos","", "#00FFFF","Gasto"),
-            Categoria(7,"Alimentación","", "#800080","Gasto")
+            Categoria(1, "Alimentos", "", "#3EC54A", "Gasto"),
+            Categoria(2, "Trasporte", "", "#FFEB3c", "Gasto"),
+            Categoria(3, "Ocio", "", "#800080", "Gasto"),
+            Categoria(4,"Salud", "", "#FF0000","Gasto"),
+            Categoria(5,"Casa", "", "#287FD2","Gasto"),
+            Categoria(6,"Educación","", "#FF00FF","Gasto"),
+            Categoria(7,"Regalos","", "#00FFFF","Gasto"),
+            Categoria(8, "Salario", "", "#808080", "Ingreso"),
+            Categoria(9, "Inversiones", "", "#FF9300", "Ingreso")
         )
         _transactionType.value = TransactionType.EXPENSE
     }

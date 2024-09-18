@@ -7,32 +7,32 @@ import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.viewHolders.CategoriesViewHolder
 import com.example.myapplication4.R
 
-//class CategoriesAdapter(private val categories:List<Categoria>)
-//    :RecyclerView.Adapter<CategoriesViewHolder>(){
+//class CategoriesAdapter(
+//    private val categories: List<Categoria>,
+//    private val onClickListener: (Categoria) -> Unit
+//) : RecyclerView.Adapter<CategoriesViewHolder>() {
+//
 //    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder {
 //        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false)
 //        return CategoriesViewHolder(view)
 //    }
 //
-////    override fun getItemCount(): Int {
-////        return categories.size
-////    }
-//    //Optimizo código
 //    override fun getItemCount() = categories.size
 //
 //    override fun onBindViewHolder(holder: CategoriesViewHolder, position: Int) {
-////        holder.render(categories[position])
-//        holder.render(categories[position], holder.itemView)
+//        val category = categories[position]
+//        holder.render(category, holder.itemView)
+//        holder.itemView.setOnClickListener { onClickListener(category) }
 //    }
 //}
 
 class CategoriesAdapter(
-    private val categories: List<Categoria>,
+    private var categories: List<Categoria>,
     private val onClickListener: (Categoria) -> Unit
 ) : RecyclerView.Adapter<CategoriesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoriesViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_category_new, parent, false)
         return CategoriesViewHolder(view)
     }
 
@@ -42,5 +42,10 @@ class CategoriesAdapter(
         val category = categories[position]
         holder.render(category, holder.itemView)
         holder.itemView.setOnClickListener { onClickListener(category) }
+    }
+
+    fun updateCategories(newCategories: List<Categoria>) {
+        categories = newCategories
+        notifyDataSetChanged()
     }
 }

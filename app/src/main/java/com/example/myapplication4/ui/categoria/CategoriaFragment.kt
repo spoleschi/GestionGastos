@@ -19,34 +19,9 @@ import com.example.myapplication4.databinding.FragmentCategoriaBinding
 import com.google.android.material.tabs.TabLayout
 
 class CategoriaFragment : Fragment() {
-
-    private val categories = listOf(
-        Categoria(
-            1,
-            "Alimentos",
-            "",
-            "3ec54a",
-            "Gasto"
-        ),
-        Categoria(
-            2,
-            "Trasporte",
-            "",
-            "ffeb3c",
-            "Gasto"
-        ),
-        Categoria(
-            3,
-            "Recreación",
-            "",
-            "287fd2",
-            "Gasto"
-        )
-    )
-    private lateinit var categoriesAdapter: CategoriesAdapter
-
-    private var binding: FragmentCategoriaBinding? = null // Use nullable type
+    private var binding: FragmentCategoriaBinding? = null
     private lateinit var viewModel: CategoriaViewModel
+    private lateinit var categoriesAdapter: CategoriesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,28 +31,9 @@ class CategoriaFragment : Fragment() {
         binding = FragmentCategoriaBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(CategoriaViewModel::class.java)
 
-        // Setup TabLayout (if needed)
-        val tabLayout = binding?.tabLayout
-        if (tabLayout != null) {
-            // Access tabLayout properties
-            tabLayout.addTab(tabLayout.newTab().setText("Gastos"))
-            tabLayout.addTab(tabLayout.newTab().setText("Ingresos"))
-        }
-
-        // Setup RecyclerView
-
-        val recyclerView = binding!!.recyclerView // Access using !! after null check
-//        categoriesAdapter = CategoriesAdapter(categories)
-
-        categoriesAdapter = CategoriesAdapter(categories) { categoria ->
-            // Aquí manejamos el clic en una categoría
-            openCategoryEditActivity(categoria)
-        }
-
-
-        recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
-//        recyclerView.layoutManager = GridLayoutManager(recyclerView.context,4)
-        recyclerView.adapter = categoriesAdapter
+        setupRecyclerView()
+        setupTabLayout()
+        observeCategories()
 
         // Manejar el clic en el botón flotante
 
@@ -90,9 +46,39 @@ class CategoriaFragment : Fragment() {
         return binding!!.root
     }
 
-    private fun setupTabLayout(tabLayout: TabLayout) {
-        // ... (same as before)
+    private fun setupRecyclerView() {
+        val recyclerView = binding!!.recyclerView
+        categoriesAdapter = CategoriesAdapter(emptyList()) { categoria ->
+            openCategoryEditActivity(categoria)
+        }
+        recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 4)
+        recyclerView.adapter = categoriesAdapter
     }
+
+    private fun setupTabLayout() {
+        val tabLayout = binding!!.tabLayout
+        tabLayout.addTab(tabLayout.newTab().setText("Gastos"))
+        tabLayout.addTab(tabLayout.newTab().setText("Ingresos"))
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> viewModel.showExpenseCategories()
+                    1 -> viewModel.showIncomeCategories()
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+
+    private fun observeCategories() {
+        viewModel.currentCategories.observe(viewLifecycleOwner) { categories ->
+            categoriesAdapter.updateCategories(categories)
+        }
+    }
+
 
     private fun openCategoryEditActivity(categoria: Categoria) {
         val intent = Intent(activity, CategoryEditActivity::class.java).apply {
