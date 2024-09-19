@@ -3,7 +3,9 @@ package com.example.myapplication4.ui.categoria
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.myapplication4.Clases.Categoria
+import kotlinx.coroutines.launch
 
 //class CategoriaViewModel : ViewModel() {
 //
@@ -96,5 +98,34 @@ class CategoriaViewModel : ViewModel() {
 
     fun showIncomeCategories() {
         _currentCategories.value = _incomeCategories.value
+    }
+
+    fun addCategory(newCategory: Categoria) {
+        val updatedCategories = currentCategories.value?.toMutableList() ?: mutableListOf()
+        updatedCategories.add(newCategory)
+        _currentCategories.value = updatedCategories
+        // Agregar la lógica para persistir la categoría en una base de datos
+    }
+
+    fun updateCategory(updatedCategory: Categoria) {
+        viewModelScope.launch {
+            val currentCategories = _currentCategories.value?.toMutableList() ?: mutableListOf()
+            val index = currentCategories.indexOfFirst { it.id == updatedCategory.id }
+            if (index != -1) {
+                currentCategories[index] = updatedCategory
+                _currentCategories.value = currentCategories
+
+                // Actualizar también la lista específica
+                if (updatedCategory.tipo == "Gasto") {
+                    _expenseCategories.value = _expenseCategories.value?.map {
+                        if (it.id == updatedCategory.id) updatedCategory else it
+                    }
+                } else {
+                    _incomeCategories.value = _incomeCategories.value?.map {
+                        if (it.id == updatedCategory.id) updatedCategory else it
+                    }
+                }
+            }
+        }
     }
 }

@@ -9,9 +9,12 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.myapplication4.databinding.ActivityCategoryEditBinding
 
 import android.widget.ArrayAdapter
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.R
 import com.example.myapplication4.adapters.ColorPickerAdapter
+import com.example.myapplication4.ui.categoria.CategoriaViewModel
 
 
 //class CategoryEditActivity : AppCompatActivity() {
@@ -56,10 +59,19 @@ import com.example.myapplication4.adapters.ColorPickerAdapter
 class CategoryEditActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCategoryEditBinding
+    private lateinit var viewModel: CategoriaViewModel
+
     private val colors = listOf("#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#000000", "#FF9300", "#808080")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //viewModel = ViewModelProvider(this).get(CategoriaViewModel::class.java)
+        // Uso el mismo viewModel que CategoriaViewModel
+        viewModel = ViewModelProvider(viewModelStore,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(application)).get(CategoriaViewModel::class.java)
+
+
         binding = ActivityCategoryEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -80,7 +92,8 @@ class CategoryEditActivity : AppCompatActivity() {
         }
 
         // Configurar el spinner para el tipo de categoría
-        val categoryTypes = arrayOf("Gasto", "Ingreso")
+        //val categoryTypes = arrayOf("Gasto", "Ingreso")
+        val categoryTypes = resources.getStringArray(R.array.category_types)
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categoryTypes)
         binding.spinnerCategoryType.setAdapter(adapter)
         binding.spinnerCategoryType.setText(categoryType, false)
@@ -97,6 +110,24 @@ class CategoryEditActivity : AppCompatActivity() {
         val type = binding.spinnerCategoryType.text.toString()
 
         // Acá implementar la lógica para guardar los cambios
+
+        // 1. Crear una instancia de Categoria con los datos modificados
+        val updatedCategory = Categoria(
+            id = categoryId.toInt(), // Asegúrate de convertir el ID a entero
+            nombre = name,
+            desc = "",
+            color = color,
+            tipo = type
+        )
+
+        // 3. Actualizar la categoría en el ViewModel
+        viewModel.updateCategory(updatedCategory)
+
+        // 4. Finalizar la actividad
+        finish()
+
+
+
         // Por ejemplo, actualizar en una base de datos o enviar a un servidor
 
         // Después de guardar, cierra la actividad
