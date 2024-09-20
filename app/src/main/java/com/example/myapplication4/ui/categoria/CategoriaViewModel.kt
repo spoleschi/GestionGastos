@@ -23,38 +23,6 @@ import kotlinx.coroutines.launch
 //}
 
 
-//class CategoriaViewModel : ViewModel() {
-//    private val _categories = MutableLiveData<List<Categoria>>()
-//    val categories: LiveData<List<Categoria>> = _categories
-//
-//    init {
-//        loadInitialCategories()
-//    }
-//
-//    private fun loadInitialCategories() {
-//        val initialCategories = listOf(
-//            Categoria(1, "Alimentos", "", "#3EC54A", "Gasto"),
-//            Categoria(2, "Trasporte", "", "#FFEB3c", "Gasto"),
-//            Categoria(3, "Ocio", "", "#800080", "Gasto"),
-//            Categoria(4,"Salud", "", "#FF0000","Gasto"),
-//            Categoria(5,"Casa", "", "#287FD2","Gasto"),
-//            Categoria(6,"Educación","", "#FF00FF","Gasto"),
-//            Categoria(7,"Regalos","", "#00FFFF","Gasto"),
-//            Categoria(8, "Salario", "", "#808080", "Ingreso"),
-//            Categoria(9, "Inversiones", "", "#FF9300", "Ingreso")
-//        )
-//        _categories.value = initialCategories
-//    }
-//
-//    fun updateCategories(newCategories: List<Categoria>) {
-//        _categories.value = newCategories
-//    }
-//
-//    // Agregar funciones para manejar la lógica de negocio,
-//    // como agregar, editar o eliminar categorías
-//}
-
-
 //Cambio para manejar en listas separadas las categorías de gastos e ingresos
 class CategoriaViewModel : ViewModel() {
     private val _expenseCategories = MutableLiveData<List<Categoria>>()
@@ -65,6 +33,8 @@ class CategoriaViewModel : ViewModel() {
 
     private val _currentCategories = MutableLiveData<List<Categoria>>()
     val currentCategories: LiveData<List<Categoria>> = _currentCategories
+
+    private var currentType: String = "Gasto"
 
     init {
         loadInitialCategories()
@@ -93,39 +63,69 @@ class CategoriaViewModel : ViewModel() {
     }
 
     fun showExpenseCategories() {
+        currentType = "Gasto"
         _currentCategories.value = _expenseCategories.value
     }
 
     fun showIncomeCategories() {
+        currentType = "Ingreso"
         _currentCategories.value = _incomeCategories.value
     }
 
     fun addCategory(newCategory: Categoria) {
-        val updatedCategories = currentCategories.value?.toMutableList() ?: mutableListOf()
-        updatedCategories.add(newCategory)
-        _currentCategories.value = updatedCategories
-        // Agregar la lógica para persistir la categoría en una base de datos
+        when (newCategory.tipo) {
+            "Gasto" -> {
+                val updatedCategories = _expenseCategories.value?.toMutableList() ?: mutableListOf()
+                updatedCategories.add(newCategory)
+                _expenseCategories.value = updatedCategories
+            }
+            "Ingreso" -> {
+                val updatedCategories = _incomeCategories.value?.toMutableList() ?: mutableListOf()
+                updatedCategories.add(newCategory)
+                _incomeCategories.value = updatedCategories
+            }
+        }
+        updateCurrentCategories()
     }
 
     fun updateCategory(updatedCategory: Categoria) {
-        viewModelScope.launch {
-            val currentCategories = _currentCategories.value?.toMutableList() ?: mutableListOf()
-            val index = currentCategories.indexOfFirst { it.id == updatedCategory.id }
-            if (index != -1) {
-                currentCategories[index] = updatedCategory
-                _currentCategories.value = currentCategories
+        val oldCategory = findCategoryById(updatedCategory.id)
 
-                // Actualizar también la lista específica
-                if (updatedCategory.tipo == "Gasto") {
-                    _expenseCategories.value = _expenseCategories.value?.map {
-                        if (it.id == updatedCategory.id) updatedCategory else it
-                    }
-                } else {
-                    _incomeCategories.value = _incomeCategories.value?.map {
-                        if (it.id == updatedCategory.id) updatedCategory else it
-                    }
-                }
+        if (oldCategory != null && oldCategory.tipo != updatedCategory.tipo) {
+            // La categoría cambió de tipo, hay que moverla
+            removeCategoryFromList(oldCategory)
+            addCategory(updatedCategory)
+        } else {
+            // La categoría no cambió de tipo, solo actualizamos sus datos
+            val listToUpdate = if (updatedCategory.tipo == "Gasto") _expenseCategories else _incomeCategories
+            val updatedList = listToUpdate.value?.map {
+                if (it.id == updatedCategory.id) updatedCategory else it
+            }
+            listToUpdate.value = updatedList
+        }
+
+        updateCurrentCategories()
+    }
+
+    private fun findCategoryById(id: Int): Categoria? {
+        return _expenseCategories.value?.find { it.id == id }
+            ?: _incomeCategories.value?.find { it.id == id }
+    }
+
+    private fun removeCategoryFromList(category: Categoria) {
+        when (category.tipo) {
+            "Gasto" -> {
+                val updatedList = _expenseCategories.value?.filter { it.id != category.id }
+                _expenseCategories.value = updatedList
+            }
+            "Ingreso" -> {
+                val updatedList = _incomeCategories.value?.filter { it.id != category.id }
+                _incomeCategories.value = updatedList
             }
         }
+    }
+
+    private fun updateCurrentCategories() {
+        _currentCategories.value = if (currentType == "Gasto") _expenseCategories.value else _incomeCategories.value
     }
 }

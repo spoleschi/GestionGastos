@@ -1,13 +1,8 @@
 package com.example.myapplication4
 
-import android.app.Dialog
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.myapplication4.databinding.ActivityCategoryEditBinding
-
 import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -134,9 +129,4 @@ class CategoryEditActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun showDialog(){
-        val dialog = Dialog(this)
-        dialog.setContentView((R.layout.dialog_category_edit))
-        dialog.show()
-    }
 }
