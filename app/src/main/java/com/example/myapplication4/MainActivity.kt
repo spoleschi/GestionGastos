@@ -12,8 +12,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication4.Clases.Usuario
 import com.example.myapplication4.databinding.ActivityMainBinding
-import java.math.BigDecimal;
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,11 +28,11 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        binding.appBarMain.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .setAnchorView(R.id.fab).show()
-        }
+//        binding.appBarMain.fab.setOnClickListener { view ->
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                .setAction("Action", null)
+//                .setAnchorView(R.id.fab).show()
+//        }
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
@@ -46,16 +46,22 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val nuevoUser = Usuario(1,"a","b","c",BigDecimal(10));
+        val nuevoUser = Usuario(
+            1,
+            "a",
+            "b",
+            "c",
+            10f
+        );
 
-        val labelSaldo: TextView = findViewById(R.id.totalLabel);
+        val totalAmount: TextView = findViewById(R.id.totalAmount);
 
-        labelSaldo.text = "$" + nuevoUser.saldo.toString();
+        totalAmount.text = "$" + nuevoUser.saldo.toString();
 
-        nuevoUser.actulizarSaldo(BigDecimal(50));
+        nuevoUser.actualizarSaldo(50f);
 
-        //Se tiene que volver a definir el valor del label
-        labelSaldo.text = "$" + nuevoUser.saldo.toString();
+        //Se tiene que volver a definir el valor del textView
+        totalAmount.text = "$" + nuevoUser.saldo.toString();
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -68,4 +74,6 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+
 }
