@@ -15,7 +15,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.databinding.FragmentTransaccionBinding
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+import java.util.Date
+import java.util.Locale
 
 class TransaccionFragment : Fragment() {
 
@@ -49,15 +54,12 @@ class TransaccionFragment : Fragment() {
 
         descGasto = binding.inputDesc
         montoGasto = binding.inputMonto
-        fechaGasto.setText(LocalDate.now().toString()) // Hardcoded
-        numeroCuotas.setText("1") // Hardcoded
-        tasaInteres.setText("0") // Hardcoded
+        fechaGasto = binding.inputDate
+        numeroCuotas = binding.inputCuotas
+        tasaInteres = binding.inputInteres
         botonGuardarGasto = binding.buttonGuardarGasto
 
-        // Hardcoded values
-        fechaGasto.setText(LocalDate.now().toString())
-        numeroCuotas.setText("1")
-        tasaInteres.setText("0")
+        categoria = Categoria("category1","firstone","red","type1")
 
         botonGuardarGasto.setOnClickListener {
             val descripcion = descGasto.text.toString()
@@ -67,12 +69,11 @@ class TransaccionFragment : Fragment() {
             val interesString = tasaInteres.text.toString()
 
             if (descripcion.isNotBlank() && montoString.isNotBlank() && fechaString.isNotBlank() && cuotasString.isNotBlank() && interesString.isNotBlank()) {
-                val monto = montoString.toFloatOrNull()
-                val cuotas = cuotasString.toIntOrNull()
-                val interes = interesString.toFloatOrNull()
-                val fecha = LocalDate.parse(fechaString)
-
-                if (monto != null && cuotas != null && interes != null) {
+                val monto = montoString.toFloat()
+                val cuotas = cuotasString.toInt()
+                val interes = interesString.toFloat()
+                val fecha = parseDate(fechaString)
+                if (monto != null && cuotas != null && interes != null && fecha != null) {
                     try {
                         vistaGasto.agregarGasto(
                             cantCuotas = cuotas,
@@ -101,6 +102,15 @@ class TransaccionFragment : Fragment() {
         }
 
         return root
+    }
+
+    fun parseDate(dateString: String, format: String = "yyyy-MM-dd"): LocalDate? {
+        return try {
+            val formatter = DateTimeFormatter.ofPattern(format)
+            LocalDate.parse(dateString, formatter)
+        } catch (e: DateTimeParseException) {
+            null // Return null if parsing fails
+        }
     }
 
     override fun onDestroyView() {
