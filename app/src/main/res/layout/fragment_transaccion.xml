@@ -93,7 +93,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
         android:hint="Descripción"
-        app:layout_constraintTop_toBottomOf="@id/tilDate">
+        app:layout_constraintTop_toBottomOf="@id/tilDate"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
