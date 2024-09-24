@@ -30,7 +30,7 @@
         android:background="@android:color/transparent"
         android:hint="0"
         android:inputType="numberDecimal"
-        android:textSize="48sp"
+        android:textSize="40sp"
         android:gravity="end"
         android:layout_margin="16dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,19 +68,82 @@
         app:layout_constraintTop_toBottomOf="@id/tvCategories" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@id/rvCategories"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fecha"
+            android:inputType="date"
+            android:focusable="false"
+            android:clickable="true" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilComment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
-        android:hint="Comentario"
-        app:layout_constraintTop_toBottomOf="@id/rvCategories">
+        android:hint="Descripción"
+        app:layout_constraintTop_toBottomOf="@id/tilDate">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tilComment">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCuotas"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCuotas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Cant. de cuotas"
+                android:inputType="number" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilInteres"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etInteres"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Interés %"
+                android:inputType="numberDecimal" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnAdd"

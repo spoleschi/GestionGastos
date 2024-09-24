@@ -1,5 +1,6 @@
 package com.example.myapplication4.ui.transaccion
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,11 @@ import com.example.myapplication4.databinding.FragmentTransaccionBinding
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication4.adapters.CategoryAdapter
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 class TransaccionFragment : Fragment() {
@@ -40,6 +45,9 @@ class TransaccionFragment : Fragment() {
         setupTabLayout()
         setupCategoryRecyclerView()
         setupAmountInput()
+        setupDateInput()
+        setupInstallmentsInput()
+        setupInterestRateInput()
         setupAddButton()
     }
 
@@ -48,8 +56,18 @@ class TransaccionFragment : Fragment() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 // Cambiar entre gastos e ingresos
                 when (tab?.position) {
-                    0 -> viewModel.setTransactionType(TransactionType.EXPENSE)
-                    1 -> viewModel.setTransactionType(TransactionType.INCOME)
+                    0 -> {
+                        viewModel.setTransactionType(TransactionType.EXPENSE)
+                        viewModel.showExpenseCategories()
+                        binding.tilCuotas.visibility = View.VISIBLE
+                        binding.tilInteres.visibility = View.VISIBLE
+                    }
+                    1 -> {
+                        viewModel.setTransactionType(TransactionType.INCOME)
+                        viewModel.showIncomeCategories()
+                        binding.tilCuotas.visibility = View.GONE
+                        binding.tilInteres.visibility = View.GONE
+                    }
                 }
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -67,7 +85,7 @@ class TransaccionFragment : Fragment() {
         }
 
         // Observar cambios en las categorías
-        viewModel.categories.observe(viewLifecycleOwner) { categories ->
+        viewModel.currentCategories.observe(viewLifecycleOwner) { categories ->
             categoryAdapter.submitList(categories)
         }
     }
@@ -82,21 +100,71 @@ class TransaccionFragment : Fragment() {
         }
     }
 
+    private fun setupDateInput() {
+        binding.etDate.setOnClickListener { showDatePickerDialog() }
+
+        viewModel.selectedDate.observe(viewLifecycleOwner) { calendar ->
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            binding.etDate.setText(dateFormat.format(calendar.time))
+        }
+    }
+
+    private fun setupInstallmentsInput() {
+        binding.etCuotas.addTextChangedListener { editable ->
+            editable?.toString()?.toIntOrNull()?.let { installments ->
+                viewModel.setInstallments(installments)
+            }
+        }
+    }
+
+    private fun setupInterestRateInput() {
+        binding.etInteres.addTextChangedListener { editable ->
+            editable?.toString()?.toDoubleOrNull()?.let { rate ->
+                viewModel.setInterestRate(rate)
+            }
+        }
+    }
+
+    private fun showDatePickerDialog() {
+        val calendar = viewModel.selectedDate.value ?: Calendar.getInstance()
+        DatePickerDialog(
+            requireContext(),
+            { _, year, month, dayOfMonth ->
+                viewModel.setSelectedDate(year, month, dayOfMonth)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
     private fun setupAddButton() {
         binding.btnAdd.setOnClickListener {
             val amount = binding.etAmount.text.toString().toDoubleOrNull()
             val comment = binding.tilComment.editText?.text.toString()
+            val date = viewModel.selectedDate.value
+            val installments = binding.etCuotas.text.toString().toIntOrNull() ?: 1
+            val interestRate = binding.etInteres.text.toString().toDoubleOrNull() ?: 0.0
 
-            if (amount != null && viewModel.selectedCategory.value != null) {
-                viewModel.addTransaction(amount, comment)
+            if (amount != null && viewModel.selectedCategory.value != null && date != null) {
+                viewModel.addTransaction(amount, comment, date, installments, interestRate)
                 // Limpiar campos después de añadir
                 binding.etAmount.text.clear()
                 binding.tilComment.editText?.text?.clear()
+                binding.etCuotas.text?.clear()
+                binding.etInteres.text?.clear()
+                // Reiniciar la fecha a la actual
+                viewModel.setSelectedDate(
+                    Calendar.getInstance().get(Calendar.YEAR),
+                    Calendar.getInstance().get(Calendar.MONTH),
+                    Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                )
                 // Mostrar mensaje de éxito
-                // Puedes usar Snackbar o Toast aquí
+                // Uso Snackbar en vez de Toast para probar
+                Snackbar.make(binding.root, "Transacción añadida con éxito", Snackbar.LENGTH_SHORT).show()
             } else {
                 // Mostrar mensaje de error
-                // Puedes usar Snackbar o Toast aquí
+                Snackbar.make(binding.root, "Por favor, completa todos los campos", Snackbar.LENGTH_SHORT).show()
             }
         }
     }
