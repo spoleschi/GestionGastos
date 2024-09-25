@@ -7,42 +7,23 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.R
 import com.example.myapplication4.adapters.CategoriesAdapter
+import com.example.myapplication4.adapters.GastoAdapter
 import com.example.myapplication4.databinding.FragmentHomeBinding
+import com.example.myapplication4.ui.categoria.CategoriaViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 class HomeFragment : Fragment() {
 
-//    private val categories = listOf(
-//        Categoria(
-//            "Alimentos",
-//            "",
-//            "3ec54a",
-//            "Gasto"
-//        ),
-//        Categoria(
-//            "Trasporte",
-//            "",
-//            "ffeb3c",
-//            "Gasto"
-//        ),
-//        Categoria(
-//            "Recreación",
-//            "",
-//            "287fd2",
-//            "Gasto"
-//        )
-//    )
-//    private lateinit var recyclerView: RecyclerView
-//    private lateinit var categoriesAdapter: CategoriesAdapter
-
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,37 +36,29 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         initUI()
-
+        observeViewModel()
     }
 
     private fun initUI() {
-//        recyclerView = binding.expensesRecyclerView
-//        categoriesAdapter = CategoriesAdapter(categories)
-//        recyclerView.layoutManager =
-//            LinearLayoutManager( recyclerView.context, LinearLayoutManager.VERTICAL, false)
-//        recyclerView.adapter = categoriesAdapter
-
-        // Obtener referencia al TextView
         val dateText = binding.dateText
-
-        // Obtener la fecha actual y formatearla
         val currentDate = Calendar.getInstance().time
         val dateFormat = SimpleDateFormat("dd/MM/yy")
         val formattedDate = dateFormat.format(currentDate)
-
-        // Asignar la fecha formateada al TextView
         dateText.text = formattedDate
 
-        val monto = binding.totalAmount;
+        binding.expensesRecyclerView.layoutManager = LinearLayoutManager(context)
+    }
 
-        // Aquí deberíamos agregar lógica adicional para interactuar con los elementos de la vista
-        // Por ejemplo, configurar el RecyclerView, manejar los clics en los botones, etc.
+    private fun observeViewModel() {
+        viewModel.gastos.observe(viewLifecycleOwner) { gastos ->
+            binding.expensesRecyclerView.adapter = GastoAdapter(gastos)
+        }
 
-        // Ejemplo: Configurar el RecyclerView
-        val expensesRecyclerView = binding.expensesRecyclerView
-        // ... configurar el adaptador y otros parámetros del RecyclerView
+        viewModel.total.observe(viewLifecycleOwner) { total ->
+            binding.totalAmount.text = "$ %.2f".format(total)
+        }
     }
 
     override fun onDestroyView() {

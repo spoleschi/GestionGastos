@@ -3,15 +3,16 @@ import java.time.LocalDate
 
 // Clase hija: Gasto
 data class Gasto(
-    val cantCuotas: Int,
-    val interes: Float,
-    val cuotas: ArrayList<Cuota> = arrayListOf(),
 // Propiedades heredadas de Transaccion
     val idGasto: Int,
     val descGasto: String,
     val montoGasto: Float,
     val fechaGasto: LocalDate,
-    val categoriaGasto: Categoria
+    val categoriaGasto: Categoria,
+//Propiedades propias
+    val cantCuotas: Int,
+    val interes: Float,
+    val cuotas: ArrayList<Cuota> = arrayListOf()
 ) : Transaccion(idGasto, descGasto, montoGasto, fechaGasto, categoriaGasto) {
     init {
         require(cantCuotas > 0) { "El número de cuotas debe ser mayor que 0" }
