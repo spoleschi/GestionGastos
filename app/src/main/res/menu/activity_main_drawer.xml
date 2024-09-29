@@ -11,10 +11,14 @@
         <item
             android:id="@+id/nav_transaction"
             android:icon="@drawable/ic_money"
-            android:title="@string/menu_transaction" />
+            android:title="Agregar nueva Trasacción" />
         <item
             android:id="@+id/nav_category"
             android:icon="@drawable/ic_category"
-            android:title="@string/menu_category" />
+            android:title="Agregar nueva Categoría" />
+        <item
+            android:id="@+id/nav_cotizacion_dolar"
+            android:icon="@drawable/ic_analytics"
+            android:title="Cotizacion Dolar" />
     </group>
 </menu>
