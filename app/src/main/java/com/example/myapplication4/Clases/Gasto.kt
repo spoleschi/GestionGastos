@@ -1,20 +1,21 @@
 package com.example.myapplication4.Clases
-import android.os.Build
-import androidx.annotation.RequiresApi
 import java.time.LocalDate
-@RequiresApi(Build.VERSION_CODES.O)
 
+// Clase hija: Gasto
 data class Gasto(
+// Propiedades heredadas de Transaccion
+    val idGasto: Int,
+    val descGasto: String,
+    val montoGasto: Float,
+    val fechaGasto: LocalDate,
+    val categoriaGasto: Categoria,
+//Propiedades propias
     val cantCuotas: Int,
     val interes: Float,
-    val cuotas: ArrayList<Cuota> = arrayListOf(),
-    val id: Int,
-    val desc: String,
-    val monto: Float,
-    val fecha: LocalDate,
-    val categoria: Categoria
-) {
+    val cuotas: ArrayList<Cuota> = arrayListOf()
+) : Transaccion(idGasto, descGasto, montoGasto, fechaGasto, categoriaGasto) {
     init {
+        require(cantCuotas > 0) { "El número de cuotas debe ser mayor que 0" }
         val fechaPagar = LocalDate.now()
         for (i in 0 until cantCuotas) {
             val cuota = Cuota(i + 1, fechaPagar.plusMonths(i.toLong()))
