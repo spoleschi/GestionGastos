@@ -26,22 +26,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-
 class TransaccionFragment : Fragment() {
 
     private var _binding: FragmentTransaccionBinding? = null
     private val binding get() = _binding!!
     private lateinit var viewModel: TransaccionViewModel
     private lateinit var categoryAdapter: CategoryAdapter
-
-    private lateinit var descGasto: EditText
-    private lateinit var montoGasto: EditText
-    private lateinit var fechaGasto: EditText
-    private lateinit var numeroCuotas: EditText
-    private lateinit var tasaInteres: EditText
-    private lateinit var botonGuardarGasto: Button
-    private lateinit var categoria: Categoria
-    private val vistaGasto: TransaccionViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,58 +40,6 @@ class TransaccionFragment : Fragment() {
     ): View {
         _binding = FragmentTransaccionBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(TransaccionViewModel::class.java)
-
-
-
-        descGasto = binding.inputDesc
-        montoGasto = binding.etAmount
-        fechaGasto = binding.etDate
-        numeroCuotas = binding.etCuotas
-        tasaInteres = binding.etInteres
-        botonGuardarGasto = binding.btnAdd
-
-        //categoria = Categoria("category1","firstone","red","type1")
-
-//        botonGuardarGasto.setOnClickListener {
-//            val descripcion = descGasto.text.toString()
-//            val montoString = montoGasto.text.toString()
-//            val fechaString = fechaGasto.text.toString()
-//            val cuotasString = numeroCuotas.text.toString()
-//            val interesString = tasaInteres.text.toString()
-//
-//            if (descripcion.isNotBlank() && montoString.isNotBlank() && fechaString.isNotBlank() && cuotasString.isNotBlank() && interesString.isNotBlank()) {
-//                val monto = montoString.toFloat()
-//                val cuotas = cuotasString.toInt()
-//                val interes = interesString.toFloat()
-//                val fecha = fechaString
-//                if (monto != null && cuotas != null && interes != null && fecha != null) {
-//                    try {
-//                        vistaGasto.agregarGasto(
-//                            cantCuotas = cuotas,
-//                            interes = interes,
-//                            desc = descripcion,
-//                            monto = monto,
-//                            fecha = fecha,
-//                            categoria = categoria
-//                        )
-//                        requireActivity().supportFragmentManager.popBackStack() // Go back to previous fragment
-//                    } catch (e: IllegalArgumentException) {
-//                        Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
-//                    }
-//                } else {
-//                    if (monto == null) montoGasto.error = "Monto inválido"
-//                    if (cuotas == null) numeroCuotas.error = "Número de cuotas inválido"
-//                    if (interes == null) tasaInteres.error = "Tasa de interés inválida"
-//                }
-//            } else {
-//                if (descripcion.isBlank()) descGasto.error = "Descripción requerida"
-//                if (montoString.isBlank()) montoGasto.error = "Monto requerido"
-//                if (fechaString.isBlank()) fechaGasto.error = "Fecha requerida"
-//                if (cuotasString.isBlank()) numeroCuotas.error = "Número de cuotas requerido"
-//                if (interesString.isBlank()) tasaInteres.error = "Tasa de interés requerida"
-//            }
-//        }
-
         return binding.root
     }
 
@@ -214,25 +152,32 @@ class TransaccionFragment : Fragment() {
 
             if (amount != null && viewModel.selectedCategory.value != null && date != null) {
                 viewModel.addTransaction(amount, comment, date, installments, interestRate)
-                // Limpiar campos después de añadir
-                binding.etAmount.text.clear()
-                binding.tilComment.editText?.text?.clear()
-                binding.etCuotas.text?.clear()
-                binding.etInteres.text?.clear()
-                // Reiniciar la fecha a la actual
-                viewModel.setSelectedDate(
-                    Calendar.getInstance().get(Calendar.YEAR),
-                    Calendar.getInstance().get(Calendar.MONTH),
-                    Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-                )
-                // Mostrar mensaje de éxito
-                // Uso Snackbar en vez de Toast para probar
-                Snackbar.make(binding.root, "Transacción añadida con éxito", Snackbar.LENGTH_SHORT).show()
+                clearFields()
+                showSuccessMessage()
             } else {
-                // Mostrar mensaje de error
-                Snackbar.make(binding.root, "Por favor, completa todos los campos", Snackbar.LENGTH_SHORT).show()
+                showErrorMessage()
             }
         }
+    }
+
+    private fun clearFields() {
+        binding.etAmount.text.clear()
+        binding.tilComment.editText?.text?.clear()
+        binding.etCuotas.text?.clear()
+        binding.etInteres.text?.clear()
+        viewModel.setSelectedDate(
+            Calendar.getInstance().get(Calendar.YEAR),
+            Calendar.getInstance().get(Calendar.MONTH),
+            Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    private fun showSuccessMessage() {
+        Snackbar.make(binding.root, "Transacción añadida con éxito", Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun showErrorMessage() {
+        Snackbar.make(binding.root, "Por favor, completa todos los campos", Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {
