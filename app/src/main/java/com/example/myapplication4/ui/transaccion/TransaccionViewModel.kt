@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myapplication4.Clases.Categoria
+import com.example.myapplication4.Clases.Gasto
 import com.example.myapplication4.Clases.Transaccion
+import java.time.LocalDate
 import java.util.Calendar
 
 //class TransaccionViewModel : ViewModel() {
@@ -50,6 +52,9 @@ class TransaccionViewModel : ViewModel() {
 
     private val _interestRate = MutableLiveData<Double>()
     val interestRate: LiveData<Double> = _interestRate
+
+    private val _gastos = MutableLiveData<List<Gasto>>(emptyList())
+    private var id = 1
 
     init {
 //        // Inicializar con categorías de ejemplo
@@ -131,6 +136,23 @@ class TransaccionViewModel : ViewModel() {
 
     fun setInterestRate(rate: Double) {
         _interestRate.value = rate
+    }
+
+    fun agregarGasto(cantCuotas: Int, interes: Float, desc: String, monto: Float, fecha: LocalDate, categoria: Categoria) {
+        if (cantCuotas < 1 || cantCuotas > 24) {
+            throw IllegalArgumentException("La cantidad de cuotas permitidas es: minimo 1, maximo 24")
+        }
+        val newGasto = Gasto(
+            cantCuotas = cantCuotas,
+            interes = interes,
+            idGasto = id++,
+            descGasto = desc,
+            montoGasto = monto,
+            fechaGasto = fecha,
+            categoriaGasto = categoria
+        )
+        val updatedExpenses = _gastos.value.orEmpty() + newGasto
+        _gastos.value = updatedExpenses
     }
 
     fun addTransaction(amount: Double, comment: String, date: Calendar, installments: Int, interestRate: Double) {
