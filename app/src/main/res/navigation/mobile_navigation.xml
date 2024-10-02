@@ -22,4 +22,10 @@
         android:name="com.example.myapplication4.ui.categoria.CategoriaFragment"
         android:label="@string/menu_category"
         tools:layout="@layout/fragment_categoria" />
+
+    <fragment
+        android:id="@+id/nav_cotizacion_dolar"
+        android:name="com.example.myapplication4.ui.Cotizacion_Dolar.CotizacionDolarFragment"
+        android:label="Cotizacion dolar"
+        tools:layout="@layout/fragment_cotizacion_dolar" />
 </navigation>
