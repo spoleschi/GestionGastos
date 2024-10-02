@@ -60,7 +60,7 @@ class TransaccionFragment : Fragment() {
         tasaInteres = binding.etInteres
         botonGuardarGasto = binding.btnAdd
 
-        categoria = Categoria("category1","firstone","red","type1")
+        categoria = Categoria("""category1","firstone","red","type1")
 
         botonGuardarGasto.setOnClickListener {
             val descripcion = descGasto.text.toString()
