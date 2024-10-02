@@ -60,47 +60,47 @@ class TransaccionFragment : Fragment() {
         tasaInteres = binding.etInteres
         botonGuardarGasto = binding.btnAdd
 
-        categoria = Categoria("category1","firstone","red","type1")
+        //categoria = Categoria("category1","firstone","red","type1")
 
-        botonGuardarGasto.setOnClickListener {
-            val descripcion = descGasto.text.toString()
-            val montoString = montoGasto.text.toString()
-            val fechaString = fechaGasto.text.toString()
-            val cuotasString = numeroCuotas.text.toString()
-            val interesString = tasaInteres.text.toString()
-
-            if (descripcion.isNotBlank() && montoString.isNotBlank() && fechaString.isNotBlank() && cuotasString.isNotBlank() && interesString.isNotBlank()) {
-                val monto = montoString.toFloat()
-                val cuotas = cuotasString.toInt()
-                val interes = interesString.toFloat()
-                val fecha = fechaString
-                if (monto != null && cuotas != null && interes != null && fecha != null) {
-                    try {
-                        vistaGasto.agregarGasto(
-                            cantCuotas = cuotas,
-                            interes = interes,
-                            desc = descripcion,
-                            monto = monto,
-                            fecha = fecha,
-                            categoria = categoria
-                        )
-                        requireActivity().supportFragmentManager.popBackStack() // Go back to previous fragment
-                    } catch (e: IllegalArgumentException) {
-                        Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    if (monto == null) montoGasto.error = "Monto inválido"
-                    if (cuotas == null) numeroCuotas.error = "Número de cuotas inválido"
-                    if (interes == null) tasaInteres.error = "Tasa de interés inválida"
-                }
-            } else {
-                if (descripcion.isBlank()) descGasto.error = "Descripción requerida"
-                if (montoString.isBlank()) montoGasto.error = "Monto requerido"
-                if (fechaString.isBlank()) fechaGasto.error = "Fecha requerida"
-                if (cuotasString.isBlank()) numeroCuotas.error = "Número de cuotas requerido"
-                if (interesString.isBlank()) tasaInteres.error = "Tasa de interés requerida"
-            }
-        }
+//        botonGuardarGasto.setOnClickListener {
+//            val descripcion = descGasto.text.toString()
+//            val montoString = montoGasto.text.toString()
+//            val fechaString = fechaGasto.text.toString()
+//            val cuotasString = numeroCuotas.text.toString()
+//            val interesString = tasaInteres.text.toString()
+//
+//            if (descripcion.isNotBlank() && montoString.isNotBlank() && fechaString.isNotBlank() && cuotasString.isNotBlank() && interesString.isNotBlank()) {
+//                val monto = montoString.toFloat()
+//                val cuotas = cuotasString.toInt()
+//                val interes = interesString.toFloat()
+//                val fecha = fechaString
+//                if (monto != null && cuotas != null && interes != null && fecha != null) {
+//                    try {
+//                        vistaGasto.agregarGasto(
+//                            cantCuotas = cuotas,
+//                            interes = interes,
+//                            desc = descripcion,
+//                            monto = monto,
+//                            fecha = fecha,
+//                            categoria = categoria
+//                        )
+//                        requireActivity().supportFragmentManager.popBackStack() // Go back to previous fragment
+//                    } catch (e: IllegalArgumentException) {
+//                        Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
+//                    }
+//                } else {
+//                    if (monto == null) montoGasto.error = "Monto inválido"
+//                    if (cuotas == null) numeroCuotas.error = "Número de cuotas inválido"
+//                    if (interes == null) tasaInteres.error = "Tasa de interés inválida"
+//                }
+//            } else {
+//                if (descripcion.isBlank()) descGasto.error = "Descripción requerida"
+//                if (montoString.isBlank()) montoGasto.error = "Monto requerido"
+//                if (fechaString.isBlank()) fechaGasto.error = "Fecha requerida"
+//                if (cuotasString.isBlank()) numeroCuotas.error = "Número de cuotas requerido"
+//                if (interesString.isBlank()) tasaInteres.error = "Tasa de interés requerida"
+//            }
+//        }
 
         return binding.root
     }
