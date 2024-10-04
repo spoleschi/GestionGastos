@@ -47,6 +47,7 @@ class TransaccionViewModel : ViewModel() {
     private val _transactions = MutableLiveData<MutableList<Transaccion>>()
     val transactions: LiveData<MutableList<Transaccion>> = _transactions
 
+
     init {
         loadInitialCategories()
         _transactionType.value = TransactionType.EXPENSE
