@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.Clases.Gasto
+import com.example.myapplication4.Clases.Ingreso
+import com.example.myapplication4.Clases.Transaccion
 import java.time.LocalDate
 
 //class HomeViewModel : ViewModel() {
@@ -17,19 +19,29 @@ import java.time.LocalDate
 
 
 class HomeViewModel : ViewModel() {
-    private val _gastos = MutableLiveData<List<Gasto>>()
-    val gastos: LiveData<List<Gasto>> = _gastos
+//    private val _gastos = MutableLiveData<List<Gasto>>()
+//    val gastos: LiveData<List<Gasto>> = _gastos
+//
+//    private val _total = MutableLiveData<Float>()
+//    val total: LiveData<Float> = _total
+
+
+    private val _transacciones = MutableLiveData<List<Transaccion>>()
+    val transacciones: LiveData<List<Transaccion>> = _transacciones
 
     private val _total = MutableLiveData<Float>()
     val total: LiveData<Float> = _total
 
+    private val _tipoTransaccion = MutableLiveData<TipoTransaccion>()
+    val tipoTransaccion: LiveData<TipoTransaccion> = _tipoTransaccion
+
     init {
-        cargarGastos()
+        _tipoTransaccion.value = TipoTransaccion.GASTO
+//        cargarGastos()
+        cargarTransacciones()
     }
 
-    private fun cargarGastos() {
-        // Aquí es donde normalmente cargarías los gastos de una base de datos o API
-        // Por ahora, usaremos datos de ejemplo
+    private fun cargarTransacciones() {
         val listaGastos = listOf(
             Gasto(1, "Compra de televisor", 1500.0f, LocalDate.of(2023, 5, 15),
                 Categoria(1, "Electrónica", "Gastos en aparatos electrónicos", "#FF9800", "Variable"), 12, 0.15f),
@@ -43,12 +55,47 @@ class HomeViewModel : ViewModel() {
                 Categoria(5, "Salud", "Gastos médicos", "#2196F3", "Variable"), 2, 0.05f)
         )
 
-        _gastos.value = listaGastos
+        val listaIngresos = listOf(
+            Ingreso(1, "Salario", 3000.0f, LocalDate.of(2023, 5, 1),
+                Categoria(6, "Salario", "Ingreso por trabajo", "#4CAF50", "Fijo")),
+            Ingreso(2, "Venta de artículos", 500.0f, LocalDate.of(2023, 6, 15),
+                Categoria(7, "Ventas", "Ingresos por ventas", "#2196F3", "Variable"))
+        )
+
+        _transacciones.value = listaGastos + listaIngresos
         calcularTotal()
     }
 
+//    private fun calcularTotal() {
+//        val totalGastos = _gastos.value?.sumOf { it.monto.toDouble() }?.toFloat() ?: 0f
+//        _total.value = totalGastos
+//    }
+
     private fun calcularTotal() {
-        val totalGastos = _gastos.value?.sumOf { it.monto.toDouble() }?.toFloat() ?: 0f
-        _total.value = totalGastos
+        val totalGastos = _transacciones.value
+            ?.filterIsInstance<Gasto>()
+            ?.sumOf { it.monto.toDouble() }
+            ?.toFloat() ?: 0f
+
+        val totalIngresos = _transacciones.value
+            ?.filterIsInstance<Ingreso>()
+            ?.sumOf { it.monto.toDouble() }
+            ?.toFloat() ?: 0f
+
+        _total.value = when (_tipoTransaccion.value) {
+            TipoTransaccion.GASTO -> totalGastos
+            TipoTransaccion.INGRESO -> totalIngresos
+            else -> 0f
+        }
     }
+
+    fun setTipoTransaccion(tipo: TipoTransaccion) {
+        _tipoTransaccion.value = tipo
+        calcularTotal()
+    }
+
+}
+
+enum class TipoTransaccion {
+    GASTO, INGRESO
 }
