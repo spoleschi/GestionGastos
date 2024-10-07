@@ -116,6 +116,23 @@ class TransaccionViewModel : ViewModel() {
         _interestRate.value = rate
     }
 
+//    fun agregarGasto(cantCuotas: Int, interes: Float, desc: String, monto: Float, fecha: LocalDate, categoria: Categoria) {
+//        if (cantCuotas < 1 || cantCuotas > 24) {
+//            throw IllegalArgumentException("La cantidad de cuotas permitidas es: minimo 1, maximo 24")
+//        }
+//        val newGasto = Gasto(
+//            cantCuotas = cantCuotas,
+//            interes = interes,
+//            idGasto = id++,
+//            descGasto = desc,
+//            montoGasto = monto,
+//            fechaGasto = fecha,
+//            categoriaGasto = categoria
+//        )
+//        val updatedExpenses = _gastos.value.orEmpty() + newGasto
+//        _gastos.value = updatedExpenses
+//    }
+
     fun addTransaction(amount: Double, comment: String, date: Calendar, installments: Int, interestRate: Double) {
         val category = _selectedCategory.value ?: return
         val transactionType = _transactionType.value ?: return
