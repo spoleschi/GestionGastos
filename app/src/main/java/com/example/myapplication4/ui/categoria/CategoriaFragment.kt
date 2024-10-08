@@ -14,6 +14,7 @@ import com.example.myapplication4.adapters.CategoriesAdapter
 import com.example.myapplication4.adapters.ColorPickerAdapter
 import com.example.myapplication4.databinding.FragmentCategoriaBinding
 import com.example.myapplication4.databinding.FragmentCategoryEditBinding
+import com.example.myapplication4.repository.CategoryRepository
 import com.google.android.material.tabs.TabLayout
 
 class CategoriaFragment : Fragment() {
@@ -28,7 +29,9 @@ class CategoriaFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCategoriaBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(requireActivity())[CategoriaViewModel::class.java]
+//        viewModel = ViewModelProvider(requireActivity())[CategoriaViewModel::class.java]
+        val repository = CategoryRepository()
+        viewModel = ViewModelProvider(requireActivity(), CategoriaViewModel.Factory(repository))[CategoriaViewModel::class.java]
 
         setupRecyclerView()
         setupTabLayout()

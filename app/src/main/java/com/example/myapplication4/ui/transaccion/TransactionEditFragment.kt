@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication4.adapters.CategoryAdapter
 import com.example.myapplication4.databinding.FragmentTransaccionBinding
+import com.example.myapplication4.repository.CategoryRepository
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import java.text.SimpleDateFormat
@@ -21,8 +23,13 @@ class TransactionEditFragment : Fragment() {
 
     private var _binding: FragmentTransaccionBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: TransaccionViewModel
+//    private lateinit var viewModel: TransaccionViewModel
     private lateinit var categoryAdapter: CategoryAdapter
+
+//    private val categoryRepository = CategoryRepository()
+    val viewModel: TransaccionViewModel by viewModels {
+        TransaccionViewModelFactory(CategoryRepository())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,7 +37,7 @@ class TransactionEditFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTransaccionBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(TransaccionViewModel::class.java)
+//        viewModel = ViewModelProvider(this).get(TransaccionViewModel::class.java)
 
 //        descGasto = binding.inputDesc
 //        montoGasto = binding.etAmount

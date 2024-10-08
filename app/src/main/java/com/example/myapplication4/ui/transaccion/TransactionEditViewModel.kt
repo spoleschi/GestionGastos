@@ -1,25 +1,15 @@
 package com.example.myapplication4.ui.transaccion
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.Clases.Gasto
 import com.example.myapplication4.Clases.Ingreso
 import com.example.myapplication4.Clases.Transaccion
+import com.example.myapplication4.repository.CategoryRepository
 import java.util.Calendar
 import java.time.LocalDate
 
-class TransaccionViewModel : ViewModel() {
-
-//    private val _categories = MutableLiveData<List<Categoria>>()
-//    val categories: LiveData<List<Categoria>> = _categories
-
-    private val _expenseCategories = MutableLiveData<List<Categoria>>()
-    val expenseCategories: LiveData<List<Categoria>> = _expenseCategories
-
-    private val _incomeCategories = MutableLiveData<List<Categoria>>()
-    val incomeCategories: LiveData<List<Categoria>> = _incomeCategories
+class TransaccionViewModel(private val categoryRepository: CategoryRepository) : ViewModel() {
 
     private val _currentCategories = MutableLiveData<List<Categoria>>()
     val currentCategories: LiveData<List<Categoria>> = _currentCategories
@@ -29,8 +19,6 @@ class TransaccionViewModel : ViewModel() {
 
     private val _transactionType = MutableLiveData<TransactionType>()
     val transactionType: LiveData<TransactionType> = _transactionType
-
-    private var currentType: String = "Gasto"
 
     private val _amount = MutableLiveData<Double>()
     val amount: LiveData<Double> = _amount
@@ -47,48 +35,27 @@ class TransaccionViewModel : ViewModel() {
     private val _transactions = MutableLiveData<MutableList<Transaccion>>()
     val transactions: LiveData<MutableList<Transaccion>> = _transactions
 
-
     init {
-        loadInitialCategories()
         _transactionType.value = TransactionType.EXPENSE
-        _selectedDate.value = Calendar.getInstance() // Inicializar con la fecha actual
+        _selectedDate.value = Calendar.getInstance()
         _transactions.value = mutableListOf()
-    }
-
-    private fun loadInitialCategories() {
-        val initialExpenseCategories = listOf(
-            Categoria(1, "Alimentos", "", "#3EC54A", "Gasto"),
-            Categoria(2, "Trasporte", "", "#FFEB3C", "Gasto"),
-            Categoria(3, "Ocio", "", "#800080", "Gasto"),
-            Categoria(4,"Salud", "", "#FF0000","Gasto"),
-            Categoria(5,"Casa", "", "#287FD2","Gasto"),
-            Categoria(6,"Educación","", "#FF00FF","Gasto"),
-            Categoria(7,"Regalos","", "#00FFFF","Gasto")
-        )
-        _expenseCategories.value = initialExpenseCategories
-
-        val initialIncomeCategories = listOf(
-            Categoria(8, "Salario", "", "#808080", "Ingreso"),
-            Categoria(9, "Inversiones", "", "#FF9300", "Ingreso")
-        )
-        _incomeCategories.value = initialIncomeCategories
-
-        // Inicialmente mostramos las categorías de gasto
-        _currentCategories.value = initialExpenseCategories
+        showExpenseCategories()
     }
 
     fun setTransactionType(type: TransactionType) {
         _transactionType.value = type
+        when (type) {
+            TransactionType.EXPENSE -> showExpenseCategories()
+            TransactionType.INCOME -> showIncomeCategories()
+        }
     }
 
     fun showExpenseCategories() {
-        currentType = "Gasto"
-        _currentCategories.value = _expenseCategories.value
+        _currentCategories.value = categoryRepository.getExpenseCategories()
     }
 
     fun showIncomeCategories() {
-        currentType = "Ingreso"
-        _currentCategories.value = _incomeCategories.value
+        _currentCategories.value = categoryRepository.getIncomeCategories()
     }
 
     fun setSelectedDate(year: Int, month: Int, dayOfMonth: Int) {
@@ -115,23 +82,6 @@ class TransaccionViewModel : ViewModel() {
     fun setInterestRate(rate: Double) {
         _interestRate.value = rate
     }
-
-//    fun agregarGasto(cantCuotas: Int, interes: Float, desc: String, monto: Float, fecha: LocalDate, categoria: Categoria) {
-//        if (cantCuotas < 1 || cantCuotas > 24) {
-//            throw IllegalArgumentException("La cantidad de cuotas permitidas es: minimo 1, maximo 24")
-//        }
-//        val newGasto = Gasto(
-//            cantCuotas = cantCuotas,
-//            interes = interes,
-//            idGasto = id++,
-//            descGasto = desc,
-//            montoGasto = monto,
-//            fechaGasto = fecha,
-//            categoriaGasto = categoria
-//        )
-//        val updatedExpenses = _gastos.value.orEmpty() + newGasto
-//        _gastos.value = updatedExpenses
-//    }
 
     fun addTransaction(amount: Double, comment: String, date: Calendar, installments: Int, interestRate: Double) {
         val category = _selectedCategory.value ?: return
@@ -162,11 +112,20 @@ class TransaccionViewModel : ViewModel() {
     }
 
     private fun generateId(): Int {
-        // Simple ID generation. In a real app, you'd use a more robust method.
         return (_transactions.value?.size ?: 0) + 1
     }
 }
 
 enum class TransactionType {
     EXPENSE, INCOME
+}
+
+class TransaccionViewModelFactory(private val categoryRepository: CategoryRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(TransaccionViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return TransaccionViewModel(categoryRepository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }
