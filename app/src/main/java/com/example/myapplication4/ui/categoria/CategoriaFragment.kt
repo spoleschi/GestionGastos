@@ -1,29 +1,19 @@
 package com.example.myapplication4.ui.categoria
 
-import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication4.CategoryEditActivity
 import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.R
 import com.example.myapplication4.adapters.CategoriesAdapter
 import com.example.myapplication4.adapters.ColorPickerAdapter
-import com.example.myapplication4.databinding.ActivityCategoryEditBinding
 import com.example.myapplication4.databinding.FragmentCategoriaBinding
+import com.example.myapplication4.databinding.FragmentCategoryEditBinding
 import com.google.android.material.tabs.TabLayout
 
 class CategoriaFragment : Fragment() {
@@ -58,13 +48,13 @@ class CategoriaFragment : Fragment() {
         binding.mainContent.visibility = View.GONE
 
         // Inflar la vista de edición
-        val editView = ActivityCategoryEditBinding.inflate(layoutInflater, binding.root, true)
+        val editView = FragmentCategoryEditBinding.inflate(layoutInflater, binding.root, true)
 
         // Configurar la vista de edición
         setupEditView(editView, categoria)
     }
 
-    private fun setupEditView(editBinding: ActivityCategoryEditBinding, categoria: Categoria?) {
+    private fun setupEditView(editBinding: FragmentCategoryEditBinding, categoria: Categoria?) {
         val colors = listOf("#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#000000", "#FF9300", "#808080")
 
         if (categoria != null) {
@@ -88,9 +78,12 @@ class CategoriaFragment : Fragment() {
         editBinding.btnSaveCategory.setOnClickListener {
             saveCategory(editBinding, categoria)
         }
+        editBinding.btnCancel.setOnClickListener {
+            returnToMainView()
+        }
     }
 
-    private fun saveCategory(editBinding: ActivityCategoryEditBinding, oldCategoria: Categoria?) {
+    private fun saveCategory(editBinding: FragmentCategoryEditBinding, oldCategoria: Categoria?) {
         val categoryName = editBinding.etCategoryName.text.toString()
         val selectedColor = editBinding.tvSelectedColor.text.toString().substringAfter(": ")
         val selectedType = editBinding.spinnerCategoryType.text.toString()

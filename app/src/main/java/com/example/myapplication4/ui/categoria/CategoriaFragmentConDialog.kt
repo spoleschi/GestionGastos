@@ -1,7 +1,6 @@
 package com.example.myapplication4.ui.categoria
 
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,18 +10,14 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication4.CategoryEditActivity
 import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.R
 import com.example.myapplication4.adapters.CategoriesAdapter
 import com.example.myapplication4.adapters.ColorPickerAdapter
-import com.example.myapplication4.databinding.ActivityCategoryEditBinding
 import com.example.myapplication4.databinding.FragmentCategoriaBinding
 import com.google.android.material.tabs.TabLayout
 
@@ -58,7 +53,7 @@ class CategoriaFragmentConDialog : Fragment() {
     private fun showDialog(categoria: Categoria?) {
         val context = requireContext()
         val dialog = Dialog(context)
-        dialog.setContentView(R.layout.activity_category_edit)
+        dialog.setContentView(R.layout.fragment_category_edit)
 
         val colors = listOf("#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#000000", "#FF9300", "#808080")
         val btnSaveCategory: Button = dialog.findViewById(R.id.btnSaveCategory)
