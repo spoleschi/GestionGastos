@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class TransaccionFragment : Fragment() {
+class TransactionEditFragment : Fragment() {
 
     private var _binding: FragmentTransaccionBinding? = null
     private val binding get() = _binding!!

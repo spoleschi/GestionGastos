@@ -37,7 +37,7 @@ class TransaccionAdapter(private val transacciones: List<Transaccion>) :
 
         holder.categoria.setBackgroundColor(Color.parseColor(transaccion.categoria.color))
 
-        // Puedes añadir lógica adicional aquí si necesitas manejar Gastos e Ingresos de manera diferente
+        // Añadir lógica adicional aquí si es necesario manejar Gastos e Ingresos de manera diferente
         when (transaccion) {
             is Gasto -> {
                 // Lógica específica para Gastos si es necesario

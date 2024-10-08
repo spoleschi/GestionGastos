@@ -9,6 +9,10 @@
             android:icon="@drawable/home_ic"
             android:title="@string/menu_home" />
         <item
+            android:id="@+id/nav_transactions"
+            android:icon="@drawable/ic_money"
+            android:title="Trasacciones" />
+        <item
             android:id="@+id/nav_transaction"
             android:icon="@drawable/ic_money"
             android:title="Trasacción" />

@@ -13,9 +13,15 @@
 
     <fragment
         android:id="@+id/nav_transaction"
-        android:name="com.example.myapplication4.ui.transaccion.TransaccionFragment"
+        android:name="com.example.myapplication4.ui.transaccion.TransactionEditFragment"
         android:label="@string/menu_transaction"
         tools:layout="@layout/fragment_transaccion" />
+
+    <fragment
+        android:id="@+id/nav_transactions"
+        android:name="com.example.myapplication4.ui.transaccion.TransactionFragment"
+        android:label="@string/menu_transactions"
+        tools:layout="@layout/fragment_transaction" />
 
     <fragment
         android:id="@+id/nav_category"
