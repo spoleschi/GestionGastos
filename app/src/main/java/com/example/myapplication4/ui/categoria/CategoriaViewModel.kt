@@ -189,8 +189,8 @@ import com.example.myapplication4.Clases.Categoria
 import com.example.myapplication4.repository.CategoryRepository
 
 class CategoriaViewModel(private val repository: CategoryRepository) : ViewModel() {
-    val expenseCategories: LiveData<List<Categoria>> = repository.expenseCategories
-    val incomeCategories: LiveData<List<Categoria>> = repository.incomeCategories
+    private val expenseCategories: LiveData<List<Categoria>> = repository.expenseCategories
+    private val incomeCategories: LiveData<List<Categoria>> = repository.incomeCategories
 
     private val _currentCategories = MutableLiveData<List<Categoria>>()
     val currentCategories: LiveData<List<Categoria>> = _currentCategories
