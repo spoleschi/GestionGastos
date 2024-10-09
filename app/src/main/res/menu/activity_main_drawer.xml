@@ -9,13 +9,17 @@
             android:icon="@drawable/home_ic"
             android:title="@string/menu_home" />
         <item
+            android:id="@+id/nav_transactions"
+            android:icon="@drawable/ic_money"
+            android:title="Trasacciones" />
+        <item
             android:id="@+id/nav_transaction"
             android:icon="@drawable/ic_money"
-            android:title="Agregar nueva Trasacción" />
+            android:title="Trasacción" />
         <item
             android:id="@+id/nav_category"
             android:icon="@drawable/ic_category"
-            android:title="Agregar nueva Categoría" />
+            android:title="Categoría" />
         <item
             android:id="@+id/nav_cotizacion_dolar"
             android:icon="@drawable/ic_analytics"

@@ -18,7 +18,7 @@ class TransaccionAdapter(private val transacciones: List<Transaccion>) :
     class TransaccionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val descripcion: TextView = view.findViewById(R.id.tvDescrip)
         val monto: TextView = view.findViewById(R.id.tvMonto)
-        //        val fecha: TextView = view.findViewById(R.id.tvCat)
+//        val fecha: TextView = view.findViewById(R.id.tvCat)
         val categoria: TextView = view.findViewById(R.id.tvCat)
     }
 
