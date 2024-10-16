@@ -185,7 +185,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.myapplication4.Clases.Categoria
+import com.example.myapplication4.clases.Categoria
 import com.example.myapplication4.repository.CategoryRepository
 
 class CategoriaViewModel(private val repository: CategoryRepository) : ViewModel() {

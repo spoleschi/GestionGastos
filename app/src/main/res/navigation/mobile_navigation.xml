@@ -15,7 +15,7 @@
         android:id="@+id/nav_transaction"
         android:name="com.example.myapplication4.ui.transaccion.TransactionEditFragment"
         android:label="@string/menu_transaction"
-        tools:layout="@layout/fragment_transaccion" />
+        tools:layout="@layout/fragment_transaction_edit" />
 
     <fragment
         android:id="@+id/nav_transactions"

@@ -2,7 +2,7 @@ package com.example.myapplication4.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.myapplication4.Clases.*
+import com.example.myapplication4.clases.*
 import java.time.LocalDate
 
 class TransactionRepository {

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication4.Clases.Categoria
+import com.example.myapplication4.clases.Categoria
 import com.example.myapplication4.R
 
 //class CategoriesAdapter(

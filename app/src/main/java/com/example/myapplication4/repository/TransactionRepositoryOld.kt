@@ -1,6 +1,6 @@
 package com.example.myapplication4.repository
 
-import com.example.myapplication4.Clases.*
+import com.example.myapplication4.clases.*
 import java.time.LocalDate
 
 class TransactionRepositoryOld {

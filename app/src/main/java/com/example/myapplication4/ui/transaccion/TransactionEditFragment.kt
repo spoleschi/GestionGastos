@@ -11,7 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication4.adapters.CategoryAdapter
-import com.example.myapplication4.databinding.FragmentTransaccionBinding
+import com.example.myapplication4.databinding.FragmentTransactionEditBinding
 import com.example.myapplication4.repository.CategoryRepository
 import com.example.myapplication4.repository.TransactionRepository
 import com.google.android.material.snackbar.Snackbar
@@ -22,7 +22,7 @@ import java.util.Locale
 
 class TransactionEditFragment : Fragment() {
 
-    private var _binding: FragmentTransaccionBinding? = null
+    private var _binding: FragmentTransactionEditBinding? = null
     private val binding get() = _binding!!
 //    private lateinit var viewModel: TransaccionViewModel
     private lateinit var categoryAdapter: CategoryAdapter
@@ -36,7 +36,7 @@ class TransactionEditFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTransaccionBinding.inflate(inflater, container, false)
+        _binding = FragmentTransactionEditBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -142,7 +142,7 @@ class TransactionEditFragment : Fragment() {
     }
 
     private fun setupAddButton() {
-        binding.btnAdd.setOnClickListener {
+        binding.btnSaveTransaction.setOnClickListener {
             val amount = binding.etAmount.text.toString().toDoubleOrNull()
             val comment = binding.tilComment.editText?.text.toString()
             val date = viewModel.selectedDate.value
