@@ -43,6 +43,7 @@ class TransactionViewModel(
     private var currentType = TransactionType.EXPENSE
     private var editingTransaction: Transaccion? = null
 
+
     init {
         _transactionType.value = TransactionType.EXPENSE
         _selectedDate.value = Calendar.getInstance()
@@ -201,6 +202,12 @@ class TransactionViewModel(
     private fun generateId(): Int {
         return (_transactions.value?.size ?: 0) + 1
     }
+
+    fun setEditingTransaction(transaction: Transaccion?) {
+        editingTransaction = transaction
+    }
+
+    fun getEditingTransaction(): Transaccion? = editingTransaction
 }
 
 enum class TransactionType {

@@ -18,6 +18,9 @@ import com.example.myapplication4.repository.CategoryRepository
 import com.google.android.material.tabs.TabLayout
 import android.app.DatePickerDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.myapplication4.clases.Gasto
+import com.example.myapplication4.clases.Ingreso
+import com.example.myapplication4.clases.Transaccion
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -88,10 +91,8 @@ class TransactionFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        transactionAdapter = TransactionAdapter { transaction ->
-            viewModel.selectTransaction(transaction)
-            showEditMode()
-        }
+        transactionAdapter = TransactionAdapter(::selectTransaction)  // Usar referencia al método
+
         listBinding.transactionRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = transactionAdapter
@@ -102,8 +103,16 @@ class TransactionFragment : Fragment() {
         listBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position) {
-                    0 -> viewModel.setTransactionType(TransactionType.EXPENSE)
-                    1 -> viewModel.setTransactionType(TransactionType.INCOME)
+                    0 -> {
+                        viewModel.setTransactionType(TransactionType.EXPENSE)
+                        editBinding.tilCuotas.visibility = View.VISIBLE
+                        editBinding.tilInteres.visibility = View.VISIBLE
+                    }
+                    1 -> {
+                        viewModel.setTransactionType(TransactionType.INCOME)
+                        editBinding.tilCuotas.visibility = View.GONE
+                        editBinding.tilInteres.visibility = View.GONE
+                    }
                 }
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -123,7 +132,56 @@ class TransactionFragment : Fragment() {
         listBinding.fabAddTransaction.setOnClickListener {
             viewModel.prepareForNewTransaction()
             showEditMode()
+            editBinding.tabLayout.getTabAt(listBinding.tabLayout.selectedTabPosition)?.select()
+            editBinding.tabLayout.visibility = View.VISIBLE
         }
+    }
+
+    private fun selectTransaction(transaction: Transaccion) {
+        // Establecer el tipo de transacción
+        viewModel.setTransactionType(
+            when (transaction) {
+                is Gasto -> TransactionType.EXPENSE
+                is Ingreso -> TransactionType.INCOME
+                else -> TransactionType.EXPENSE
+            }
+        )
+
+        // Seleccionar el tab correcto según el tipo de transacción
+        val tabPosition = when (transaction) {
+            is Gasto -> 0
+            is Ingreso -> 1
+            else -> 0
+        }
+//        editBinding.tabLayout.getTabAt(tabPosition)?.select()
+        editBinding.tabLayout.visibility = View.GONE
+
+        // Llenar los campos de edición directamente
+        editBinding.apply {
+            etAmount.setText(transaction.monto.toString())
+            tilComment.editText?.setText(transaction.desc)
+
+            // Establecer la fecha
+            val calendar = Calendar.getInstance().apply {
+                set(transaction.fecha.year, transaction.fecha.monthValue - 1, transaction.fecha.dayOfMonth)
+            }
+            etDate.setText(SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(calendar.time))
+            viewModel.setSelectedDate(transaction.fecha.year, transaction.fecha.monthValue - 1, transaction.fecha.dayOfMonth)
+
+            // Si es un gasto, llenar campos adicionales
+            if (transaction is Gasto) {
+                etCuotas.setText(transaction.cantCuotas.toString())
+                etInteres.setText(transaction.interes.toString())
+            }
+        }
+        // Establecer la categoría seleccionada
+        viewModel.setSelectedCategory(transaction.categoria)
+
+        // Guardar la transacción que se está editando
+        viewModel.setEditingTransaction(transaction)
+
+        // Mostrar la vista de edición
+        showEditMode()
     }
 
     private fun setupCategoryRecyclerView() {
@@ -137,6 +195,9 @@ class TransactionFragment : Fragment() {
     }
 
     private fun setupEditViews() {
+
+        setupEditTabLayout()
+
         editBinding.etAmount.addTextChangedListener { editable ->
             editable?.toString()?.toDoubleOrNull()?.let { viewModel.setAmount(it) }
         }
@@ -168,6 +229,26 @@ class TransactionFragment : Fragment() {
         editBinding.btnCancel.setOnClickListener {
             showListMode()
         }
+    }
+    private fun setupEditTabLayout() {
+        editBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> {
+                        viewModel.setTransactionType(TransactionType.EXPENSE)
+                        editBinding.tilCuotas.visibility = View.VISIBLE
+                        editBinding.tilInteres.visibility = View.VISIBLE
+                    }
+                    1 -> {
+                        viewModel.setTransactionType(TransactionType.INCOME)
+                        editBinding.tilCuotas.visibility = View.GONE
+                        editBinding.tilInteres.visibility = View.GONE
+                    }
+                }
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
     }
 
     private fun observeViewModel() {
@@ -249,6 +330,7 @@ class TransactionFragment : Fragment() {
 
     private fun showListMode() {
         isEditMode = false
+        listBinding.tabLayout.getTabAt(editBinding.tabLayout.selectedTabPosition)?.select()
         editBinding.root.visibility = View.GONE
         listBinding.root.visibility = View.VISIBLE
         clearEditFields()
