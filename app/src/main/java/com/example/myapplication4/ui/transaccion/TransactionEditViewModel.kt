@@ -1,15 +1,19 @@
 package com.example.myapplication4.ui.transaccion
 
 import androidx.lifecycle.*
-import com.example.myapplication4.Clases.Categoria
-import com.example.myapplication4.Clases.Gasto
-import com.example.myapplication4.Clases.Ingreso
-import com.example.myapplication4.Clases.Transaccion
+import com.example.myapplication4.clases.Categoria
+import com.example.myapplication4.clases.Gasto
+import com.example.myapplication4.clases.Ingreso
+import com.example.myapplication4.clases.Transaccion
 import com.example.myapplication4.repository.CategoryRepository
+import com.example.myapplication4.repository.TransactionRepository
 import java.util.Calendar
 import java.time.LocalDate
 
-class TransaccionViewModel(private val categoryRepository: CategoryRepository) : ViewModel() {
+class TransactionEditViewModel(
+    private val categoryRepository: CategoryRepository,
+    private val transactionRepository: TransactionRepository
+) : ViewModel() {
 
     private val _currentCategories = MutableLiveData<List<Categoria>>()
     val currentCategories: LiveData<List<Categoria>> = _currentCategories
@@ -32,14 +36,19 @@ class TransaccionViewModel(private val categoryRepository: CategoryRepository) :
     private val _interestRate = MutableLiveData<Double>()
     val interestRate: LiveData<Double> = _interestRate
 
-    private val _transactions = MutableLiveData<MutableList<Transaccion>>()
-    val transactions: LiveData<MutableList<Transaccion>> = _transactions
+    private val _transactions = MutableLiveData<List<Transaccion>>()
+    val transactions: LiveData<List<Transaccion>> = _transactions
 
     init {
         _transactionType.value = TransactionType.EXPENSE
         _selectedDate.value = Calendar.getInstance()
-        _transactions.value = mutableListOf()
+        loadTransactions()
         showExpenseCategories()
+    }
+
+    private fun loadTransactions() {
+        val allTransactions = transactionRepository.getExpenses() + transactionRepository.getIncomes()
+        _transactions.value = allTransactions
     }
 
     fun setTransactionType(type: TransactionType) {
@@ -106,9 +115,16 @@ class TransaccionViewModel(private val categoryRepository: CategoryRepository) :
             )
         }
 
-        val currentTransactions = _transactions.value ?: mutableListOf()
-        currentTransactions.add(transaction)
-        _transactions.value = currentTransactions
+        // Add the new transaction to the repository
+        when (transactionType) {
+//            TransactionType.EXPENSE -> transactionRepository.addExpense(transaction as Gasto)
+//            TransactionType.INCOME -> transactionRepository.addIncome(transaction as Ingreso)
+            TransactionType.EXPENSE -> transactionRepository.addTransaction(transaction as Gasto)
+            TransactionType.INCOME -> transactionRepository.addTransaction(transaction as Ingreso)
+        }
+
+        // Reload transactions to reflect the changes
+        loadTransactions()
     }
 
     private fun generateId(): Int {
@@ -116,15 +132,18 @@ class TransaccionViewModel(private val categoryRepository: CategoryRepository) :
     }
 }
 
-enum class TransactionType {
-    EXPENSE, INCOME
-}
+//enum class TransactionType {
+//    EXPENSE, INCOME
+//}
 
-class TransaccionViewModelFactory(private val categoryRepository: CategoryRepository) : ViewModelProvider.Factory {
+class TransactionEditViewModelFactory(
+    private val categoryRepository: CategoryRepository,
+    private val transactionRepository: TransactionRepository
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TransaccionViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(TransactionEditViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return TransaccionViewModel(categoryRepository) as T
+            return TransactionEditViewModel(categoryRepository, transactionRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

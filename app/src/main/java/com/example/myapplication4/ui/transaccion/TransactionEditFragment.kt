@@ -11,8 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication4.adapters.CategoryAdapter
-import com.example.myapplication4.databinding.FragmentTransaccionBinding
+import com.example.myapplication4.databinding.FragmentTransactionEditBinding
 import com.example.myapplication4.repository.CategoryRepository
+import com.example.myapplication4.repository.TransactionRepository
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import java.text.SimpleDateFormat
@@ -21,14 +22,13 @@ import java.util.Locale
 
 class TransactionEditFragment : Fragment() {
 
-    private var _binding: FragmentTransaccionBinding? = null
+    private var _binding: FragmentTransactionEditBinding? = null
     private val binding get() = _binding!!
 //    private lateinit var viewModel: TransaccionViewModel
     private lateinit var categoryAdapter: CategoryAdapter
 
-//    private val categoryRepository = CategoryRepository()
-    val viewModel: TransaccionViewModel by viewModels {
-        TransaccionViewModelFactory(CategoryRepository())
+    private val viewModel: TransactionEditViewModel by viewModels {
+        TransactionEditViewModelFactory(CategoryRepository(), TransactionRepository())
     }
 
     override fun onCreateView(
@@ -36,16 +36,7 @@ class TransactionEditFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTransaccionBinding.inflate(inflater, container, false)
-//        viewModel = ViewModelProvider(this).get(TransaccionViewModel::class.java)
-
-//        descGasto = binding.inputDesc
-//        montoGasto = binding.etAmount
-//        fechaGasto = binding.etDate
-//        numeroCuotas = binding.etCuotas
-//        tasaInteres = binding.etInteres
-//        botonGuardarGasto = binding.btnAdd
-
+        _binding = FragmentTransactionEditBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -151,21 +142,12 @@ class TransactionEditFragment : Fragment() {
     }
 
     private fun setupAddButton() {
-//        botonGuardarGasto.setOnClickListener {
-        binding.btnAdd.setOnClickListener {
-//            val descripcion = descGasto.text.toString()
-//            val montoString = montoGasto.text.toString()
-//            val fechaString = fechaGasto.text.toString()
-//            val cuotasString = numeroCuotas.text.toString()
-//            val interesString = tasaInteres.text.toString()
-
+        binding.btnSaveTransaction.setOnClickListener {
             val amount = binding.etAmount.text.toString().toDoubleOrNull()
             val comment = binding.tilComment.editText?.text.toString()
             val date = viewModel.selectedDate.value
             val installments = binding.etCuotas.text.toString().toIntOrNull() ?: 1
             val interestRate = binding.etInteres.text.toString().toDoubleOrNull() ?: 0.0
-
-            //if (descripcion.isNotBlank() && montoString.isNotBlank() && fechaString.isNotBlank() && cuotasString.isNotBlank() && interesString.isNotBlank()) {
 
             if (amount != null && comment.isNotBlank() && viewModel.selectedCategory.value != null && date != null) {
                 viewModel.addTransaction(amount, comment, date, installments, interestRate)
@@ -195,14 +177,6 @@ class TransactionEditFragment : Fragment() {
     }
 
     private fun showErrorMessage() {
-//        if (monto == null) montoGasto.error = "Monto inválido"
-//        if (cuotas == null) numeroCuotas.error = "Número de cuotas inválido"
-//        if (interes == null) tasaInteres.error = "Tasa de interés inválida"
-//        if (descripcion.isBlank()) descGasto.error = "Descripción requerida"
-//        if (montoString.isBlank()) montoGasto.error = "Monto requerido"
-//        if (fechaString.isBlank()) fechaGasto.error = "Fecha requerida"
-//        if (cuotasString.isBlank()) numeroCuotas.error = "Número de cuotas requerido"
-//        if (interesString.isBlank()) tasaInteres.error = "Tasa de interés requerida"
         Snackbar.make(binding.root, "Por favor, completa todos los campos", Snackbar.LENGTH_SHORT)
             .show()
     }

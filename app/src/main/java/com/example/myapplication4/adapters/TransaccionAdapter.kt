@@ -5,12 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication4.Clases.Gasto
-import com.example.myapplication4.Clases.Ingreso
-import com.example.myapplication4.Clases.Transaccion
+import com.example.myapplication4.clases.Gasto
+import com.example.myapplication4.clases.Ingreso
+import com.example.myapplication4.clases.Transaccion
 import com.example.myapplication4.R
-import java.text.SimpleDateFormat
-import java.util.*
 
 class TransaccionAdapter(private val transacciones: List<Transaccion>) :
     RecyclerView.Adapter<TransaccionAdapter.TransaccionViewHolder>() {

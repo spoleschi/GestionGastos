@@ -2,7 +2,7 @@ package com.example.myapplication4.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.myapplication4.Clases.Categoria
+import com.example.myapplication4.clases.Categoria
 
 class CategoryRepository {
     private val _expenseCategories = MutableLiveData<List<Categoria>>()

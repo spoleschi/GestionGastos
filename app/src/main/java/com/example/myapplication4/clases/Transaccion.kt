@@ -1,4 +1,4 @@
-package com.example.myapplication4.Clases
+package com.example.myapplication4.clases
 import java.time.LocalDate
 
 // Clase Padre

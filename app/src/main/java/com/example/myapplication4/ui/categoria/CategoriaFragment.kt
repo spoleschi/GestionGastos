@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.myapplication4.Clases.Categoria
+import com.example.myapplication4.clases.Categoria
 import com.example.myapplication4.R
 import com.example.myapplication4.adapters.CategoriesAdapter
 import com.example.myapplication4.adapters.ColorPickerAdapter
@@ -44,6 +44,38 @@ class CategoriaFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun setupRecyclerView() {
+        val recyclerView = binding!!.recyclerView
+        categoriesAdapter = CategoriesAdapter(emptyList()) { categoria ->
+            showEditView(categoria) // Pasar la categoría seleccionada para edición
+        }
+        recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 4)
+        recyclerView.adapter = categoriesAdapter
+    }
+
+    private fun setupTabLayout() {
+        val tabLayout = binding!!.tabLayout
+        tabLayout.addTab(tabLayout.newTab().setText("Gastos"))
+        tabLayout.addTab(tabLayout.newTab().setText("Ingresos"))
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> viewModel.showExpenseCategories()
+                    1 -> viewModel.showIncomeCategories()
+                }
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+
+    private fun observeCategories() {
+        viewModel.currentCategories.observe(viewLifecycleOwner) { categories ->
+            categoriesAdapter.updateCategories(categories)
+        }
     }
 
     private fun showEditView(categoria: Categoria?) {
@@ -116,39 +148,6 @@ class CategoriaFragment : Fragment() {
         // Remover la vista de edición y mostrar la vista principal
         (binding.root as ViewGroup).removeViewAt((binding.root as ViewGroup).childCount - 1)
         binding.mainContent.visibility = View.VISIBLE
-    }
-
-    private fun setupRecyclerView() {
-        val recyclerView = binding!!.recyclerView
-        categoriesAdapter = CategoriesAdapter(emptyList()) { categoria ->
-            showEditView(categoria) // Pasar la categoría seleccionada para edición
-        }
-        recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 4)
-        recyclerView.adapter = categoriesAdapter
-    }
-
-    private fun setupTabLayout() {
-        val tabLayout = binding!!.tabLayout
-        tabLayout.addTab(tabLayout.newTab().setText("Gastos"))
-        tabLayout.addTab(tabLayout.newTab().setText("Ingresos"))
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                when (tab?.position) {
-                    0 -> viewModel.showExpenseCategories()
-                    1 -> viewModel.showIncomeCategories()
-                }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
-    }
-
-    private fun observeCategories() {
-        viewModel.currentCategories.observe(viewLifecycleOwner) { categories ->
-            categoriesAdapter.updateCategories(categories)
-        }
     }
 
     override fun onResume() {

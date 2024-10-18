@@ -4,9 +4,9 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication4.Clases.Gasto
-import com.example.myapplication4.Clases.Ingreso
-import com.example.myapplication4.Clases.Transaccion
+import com.example.myapplication4.clases.Gasto
+import com.example.myapplication4.clases.Ingreso
+import com.example.myapplication4.clases.Transaccion
 import com.example.myapplication4.databinding.ItemTransaccionBinding
 
 class TransaccionAdapterOld(
