@@ -1,14 +1,12 @@
-package com.example.myapplication4.adapters
+package com.example.myapplication4.ui.adapters
 
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication4.Clases.Categoria
-import com.example.myapplication4.databinding.ItemCategoryBinding
+import com.example.myapplication4.clases.Categoria
 import com.example.myapplication4.databinding.ItemCategoryNewBinding
 
 

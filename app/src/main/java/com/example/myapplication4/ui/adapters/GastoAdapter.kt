@@ -1,14 +1,11 @@
-package com.example.myapplication4.adapters
+package com.example.myapplication4.ui.adapters
 
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication4.Clases.Gasto
+import com.example.myapplication4.clases.Gasto
 import com.example.myapplication4.R
-import com.example.myapplication4.databinding.ItemCategoryNewBinding
 import com.example.myapplication4.databinding.ItemTransaccionBinding
 
 class GastoAdapter(private val gastos: List<Gasto>) : RecyclerView.Adapter<GastoViewHolder>() {

@@ -1,4 +1,4 @@
-package com.example.myapplication4.adapters
+package com.example.myapplication4.ui.adapters
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication4.Clases.Categoria
+import com.example.myapplication4.model.Categoria
 import com.example.myapplication4.R
 
 //class CategoriesAdapter(

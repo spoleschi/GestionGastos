@@ -1,4 +1,4 @@
-package com.example.myapplication4.adapters
+package com.example.myapplication4.ui.adapters
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable

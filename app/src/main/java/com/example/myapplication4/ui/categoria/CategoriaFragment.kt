@@ -1,5 +1,6 @@
 package com.example.myapplication4.ui.categoria
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +9,20 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.myapplication4.Clases.Categoria
+import com.example.myapplication4.model.Categoria
 import com.example.myapplication4.R
-import com.example.myapplication4.adapters.CategoriesAdapter
-import com.example.myapplication4.adapters.ColorPickerAdapter
+import com.example.myapplication4.ui.adapters.CategoriesAdapter
+import com.example.myapplication4.ui.adapters.ColorPickerAdapter
 import com.example.myapplication4.databinding.FragmentCategoriaBinding
 import com.example.myapplication4.databinding.FragmentCategoryEditBinding
+import com.example.myapplication4.model.AppDatabase
 import com.example.myapplication4.repository.CategoryRepository
 import com.google.android.material.tabs.TabLayout
+
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.Lifecycle
+import kotlinx.coroutines.launch
 
 class CategoriaFragment : Fragment() {
     private var _binding: FragmentCategoriaBinding? = null
@@ -30,8 +37,18 @@ class CategoriaFragment : Fragment() {
     ): View {
         _binding = FragmentCategoriaBinding.inflate(inflater, container, false)
 //        viewModel = ViewModelProvider(requireActivity())[CategoriaViewModel::class.java]
-        val repository = CategoryRepository()
-        viewModel = ViewModelProvider(requireActivity(), CategoriaViewModel.Factory(repository))[CategoriaViewModel::class.java]
+
+        // Inicializar la base de datos y el repositorio
+        val database = AppDatabase.getDatabase(requireContext())
+        val repository = CategoryRepository(database.categoriaDao())
+
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            CategoriaViewModel.Factory(repository)
+        )[CategoriaViewModel::class.java]
+
+//        viewModel = ViewModelProvider(this, CategoriaViewModel.Factory(repository))
+//            .get(CategoriaViewModel::class.java)
 
         setupRecyclerView()
         setupTabLayout()
@@ -44,6 +61,49 @@ class CategoriaFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun setupRecyclerView() {
+        val recyclerView = binding!!.recyclerView
+        categoriesAdapter = CategoriesAdapter(emptyList()) { categoria ->
+            showEditView(categoria) // Pasar la categoría seleccionada para edición
+        }
+        recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 4)
+        recyclerView.adapter = categoriesAdapter
+    }
+
+    private fun setupTabLayout() {
+        val tabLayout = binding!!.tabLayout
+        tabLayout.addTab(tabLayout.newTab().setText("Gastos"))
+        tabLayout.addTab(tabLayout.newTab().setText("Ingresos"))
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> viewModel.showExpenseCategories()
+                    1 -> viewModel.showIncomeCategories()
+                }
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+
+//    private fun observeCategories() {
+//        viewModel.currentCategories.observe(viewLifecycleOwner) { categories ->
+//            categoriesAdapter.updateCategories(categories)
+//        }
+//    }
+
+    @SuppressLint("RepeatOnLifecycleWrongUsage")
+    private fun observeCategories() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.currentCategories.collect { categories ->
+                    categoriesAdapter.updateCategories(categories)
+                }
+            }
+        }
     }
 
     private fun showEditView(categoria: Categoria?) {
@@ -116,39 +176,6 @@ class CategoriaFragment : Fragment() {
         // Remover la vista de edición y mostrar la vista principal
         (binding.root as ViewGroup).removeViewAt((binding.root as ViewGroup).childCount - 1)
         binding.mainContent.visibility = View.VISIBLE
-    }
-
-    private fun setupRecyclerView() {
-        val recyclerView = binding!!.recyclerView
-        categoriesAdapter = CategoriesAdapter(emptyList()) { categoria ->
-            showEditView(categoria) // Pasar la categoría seleccionada para edición
-        }
-        recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 4)
-        recyclerView.adapter = categoriesAdapter
-    }
-
-    private fun setupTabLayout() {
-        val tabLayout = binding!!.tabLayout
-        tabLayout.addTab(tabLayout.newTab().setText("Gastos"))
-        tabLayout.addTab(tabLayout.newTab().setText("Ingresos"))
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                when (tab?.position) {
-                    0 -> viewModel.showExpenseCategories()
-                    1 -> viewModel.showIncomeCategories()
-                }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
-    }
-
-    private fun observeCategories() {
-        viewModel.currentCategories.observe(viewLifecycleOwner) { categories ->
-            categoriesAdapter.updateCategories(categories)
-        }
     }
 
     override fun onResume() {

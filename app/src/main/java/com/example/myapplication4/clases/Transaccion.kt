@@ -1,4 +1,4 @@
-package com.example.myapplication4.Clases
+package com.example.myapplication4.clases
 import java.time.LocalDate
 
 // Clase Padre
@@ -9,8 +9,5 @@ open class Transaccion(
     val fecha: LocalDate,
     val categoria: Categoria,
 //    val usuario: Usuario
-
-//    val cantCuotas: Int = 1,
-//    val interes: Float
 )
 

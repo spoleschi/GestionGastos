@@ -3,10 +3,10 @@ package com.example.myapplication4.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.myapplication4.Clases.Categoria
-import com.example.myapplication4.Clases.Gasto
-import com.example.myapplication4.Clases.Ingreso
-import com.example.myapplication4.Clases.Transaccion
+import com.example.myapplication4.clases.Categoria
+import com.example.myapplication4.clases.Gasto
+import com.example.myapplication4.clases.Ingreso
+import com.example.myapplication4.clases.Transaccion
 import java.time.LocalDate
 
 //class HomeViewModel : ViewModel() {
