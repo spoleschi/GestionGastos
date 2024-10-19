@@ -17,6 +17,9 @@ interface CategoriaDao {
     @Update
     suspend fun updateCategoria(categoria: Categoria)
 
+    @Delete
+    suspend fun deleteCategoria(categoria: Categoria)
+
     @Query("SELECT * FROM categorias WHERE id = :id")
     suspend fun getCategoriaById(id: Int): Categoria?
 

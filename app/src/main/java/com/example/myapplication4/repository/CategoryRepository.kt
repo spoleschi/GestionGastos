@@ -42,6 +42,11 @@ class CategoryRepository(private val categoriaDao: CategoriaDao) {
         categoriaDao.updateCategoria(updatedCategory)
     }
 
+    suspend fun deleteCategory(categoria: Categoria) {
+        categoriaDao.deleteCategoria(categoria)
+    }
+
+
     suspend fun findCategoryById(id: Int): Categoria? {
         return categoriaDao.getCategoriaById(id)
     }

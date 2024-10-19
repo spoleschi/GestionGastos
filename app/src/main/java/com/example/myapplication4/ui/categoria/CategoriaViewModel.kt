@@ -60,6 +60,12 @@ class CategoriaViewModel(
         }
     }
 
+    fun deleteCategory(categoria: Categoria) {
+        viewModelScope.launch {
+            repository.deleteCategory(categoria)
+        }
+    }
+
     suspend fun getCategoryById(id: Int): Categoria? = repository.findCategoryById(id)
 
     suspend fun getAllCategories(): List<Categoria> = repository.getAllCategories()

@@ -1,6 +1,7 @@
 package com.example.myapplication4.ui.categoria
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -144,6 +145,16 @@ class CategoriaFragment : Fragment() {
         editBinding.btnCancel.setOnClickListener {
             returnToMainView()
         }
+
+        // Si la categoría existe, mostrar el botón eliminar y manejar el clic
+        if (categoria != null) {
+            editBinding.btnDeleteCategory.visibility = View.VISIBLE
+            editBinding.btnDeleteCategory.setOnClickListener {
+                eliminarCategoria(categoria)
+            }
+        } else {
+            editBinding.btnDeleteCategory.visibility = View.GONE
+        }
     }
 
     private fun saveCategory(editBinding: FragmentCategoryEditBinding, oldCategoria: Categoria?) {
@@ -170,6 +181,18 @@ class CategoriaFragment : Fragment() {
         }
 
         returnToMainView()
+    }
+
+    private fun eliminarCategoria(categoria: Categoria) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Eliminar Categoría")
+            .setMessage("¿Estás seguro de que deseas eliminar esta categoría?")
+            .setPositiveButton("Eliminar") { _, _ ->
+                viewModel.deleteCategory(categoria)
+                returnToMainView()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     private fun returnToMainView() {
