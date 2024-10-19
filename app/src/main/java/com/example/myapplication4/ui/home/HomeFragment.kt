@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication4.clases.Gasto
 import com.example.myapplication4.clases.Ingreso
 import com.example.myapplication4.clases.Transaccion
-import com.example.myapplication4.adapters.TransaccionAdapterOld
+import com.example.myapplication4.ui.adapters.TransaccionAdapterOld
 import com.example.myapplication4.databinding.FragmentHomeBinding
 import com.google.android.material.tabs.TabLayout
 import java.text.SimpleDateFormat
