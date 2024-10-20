@@ -1,6 +1,13 @@
 package com.example.myapplication4.model
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
+import androidx.room.Delete
+import androidx.room.OnConflictStrategy
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TransaccionDao {
@@ -17,12 +24,8 @@ interface TransaccionDao {
 
 
     @Query("SELECT * FROM transaccion")
-    suspend fun getAllTransacciones(): List<Transaccion>
+    suspend fun getAllTransacciones(): Flow<List<Categoria>>
 
     @Query("SELECT * FROM transaccion WHERE id = :transaccionId")
-    suspend fun getTransaccionById(transaccionId: Int): Transaccion?
-
-    @Transaction
-    @Query("SELECT * FROM transaccion WHERE id = :transaccionId")
-    suspend fun getTransaccionConCuotas(transaccionId: Int): TransaccionConCuotas
+    suspend fun getTransaccionById(transaccionId: Int): Transaccion
 }

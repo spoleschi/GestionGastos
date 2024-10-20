@@ -6,13 +6,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication4.databinding.ItemTransactionBinding
-import java.time.format.DateTimeFormatter
 import android.graphics.Color
-import com.example.myapplication4.clases.Transaccion
+import com.example.myapplication4.model.Categoria
+import com.example.myapplication4.model.Transaccion
+import com.example.myapplication4.repository.CategoryRepository
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
+import kotlin.reflect.KSuspendFunction1
 
-class TransactionAdapter(private val onTransactionClick: (Transaccion) -> Unit) :
+class TransactionAdapter(private val onTransactionClick: KSuspendFunction1<Transaccion, Unit>, private val repository: CategoryRepository) :
     ListAdapter<Transaccion, TransactionAdapter.ViewHolder>(TransactionDiffCallback()) {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemTransactionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
@@ -24,18 +29,34 @@ class TransactionAdapter(private val onTransactionClick: (Transaccion) -> Unit) 
 
     inner class ViewHolder(private val binding: ItemTransactionBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(transaction: Transaccion) {
-            binding.apply {
-                descriptionTextView.text = transaction.desc
-                amountTextView.text = "$ ${transaction.monto}"
-                dateTextView.text = transaction.fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                categoryTextView.text = transaction.categoria.nombre
-                categoryTextView.setTextColor(Color.parseColor(transaction.categoria.color))
+            GlobalScope.launch {
+                val categoria: Categoria? = repository.findCategoryById(transaction.categoriaId)
 
-                // Set click listener for the entire item
-                root.setOnClickListener { onTransactionClick(transaction) }
+                // Now update the UI on the main thread
+                binding.apply {
+                    descriptionTextView.text = transaction.desc
+                    amountTextView.text = "$ ${transaction.monto}"
+
+                    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    binding.dateTextView.text = dateFormat.format(transaction.fecha)
+
+                    // Make sure categoria is not null before accessing its properties
+                    categoryTextView.text = categoria?.nombre ?: "Unknown"
+                    categoria?.color?.let { color ->
+                        categoryTextView.setTextColor(Color.parseColor(color))
+                    }
+
+                    // Set click listener for the entire item
+                    root.setOnClickListener {
+                        GlobalScope.launch {
+                            onTransactionClick(transaction) // Lanzar corrutina para la función suspendida
+                        }
+                    }
+                }
             }
         }
     }
+
 
     class TransactionDiffCallback : DiffUtil.ItemCallback<Transaccion>() {
         override fun areItemsTheSame(oldItem: Transaccion, newItem: Transaccion): Boolean {

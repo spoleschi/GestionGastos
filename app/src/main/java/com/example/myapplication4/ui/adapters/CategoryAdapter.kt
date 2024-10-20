@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myapplication4.clases.Categoria
+import com.example.myapplication4.model.Categoria
 import com.example.myapplication4.databinding.ItemCategoryNewBinding
 
 

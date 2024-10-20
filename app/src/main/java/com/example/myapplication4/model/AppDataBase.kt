@@ -8,6 +8,7 @@ import androidx.room.RoomDatabase
 @Database(entities = [Categoria::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun categoriaDao(): CategoriaDao
+    abstract fun transaccionDao(): TransaccionDao
 
     companion object {
         @Volatile
