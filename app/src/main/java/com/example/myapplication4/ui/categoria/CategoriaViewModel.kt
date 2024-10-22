@@ -221,6 +221,10 @@ class CategoriaViewModel(private val repository: CategoryRepository) : ViewModel
         updateCurrentCategories()
     }
 
+    fun deleteCategory(categoria: Categoria) {
+            repository.deleteCategory(categoria)
+    }
+
     fun getCategoryById(id: Int): Categoria? = repository.findCategoryById(id)
 
     fun getAllCategories(): List<Categoria> = repository.getAllCategories()

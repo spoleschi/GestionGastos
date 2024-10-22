@@ -62,6 +62,18 @@ class CategoryRepository {
         }
     }
 
+    fun deleteCategory(category: Categoria) {
+        val updatedList = when (category.tipo) {
+            "Gasto" -> _expenseCategories.value?.filter { it.id != category.id }
+            "Ingreso" -> _incomeCategories.value?.filter { it.id != category.id }
+            else -> return // Ignore invalid types
+        }
+
+        if (updatedList != null) {
+            updateCategoryList(category.tipo, updatedList)
+        }
+    }
+
     fun findCategoryById(id: Int): Categoria? {
         return _expenseCategories.value?.find { it.id == id }
             ?: _incomeCategories.value?.find { it.id == id }
@@ -93,5 +105,4 @@ class CategoryRepository {
     fun getIncomeCategories(): List<Categoria> {
         return _incomeCategories.value ?: emptyList()
     }
-
 }
