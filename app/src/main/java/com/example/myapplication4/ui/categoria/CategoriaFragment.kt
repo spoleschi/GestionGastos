@@ -1,4 +1,3 @@
-
 package com.example.myapplication4.ui.categoria
 import android.app.AlertDialog
 import android.os.Bundle
@@ -164,7 +163,7 @@ class CategoriaFragment : Fragment() {
             viewModel.updateCategory(updatedCategory)
         }
 
-        returnToMainView()
+        returnToMainView(selectedType)
     }
 
     private fun eliminarCategoria(categoria: Categoria) {
@@ -179,9 +178,23 @@ class CategoriaFragment : Fragment() {
             .show()
     }
 
-    private fun returnToMainView() {
+    private fun returnToMainView(selectedType: String = "") {
         // Remover la vista de edición y mostrar la vista principal
         (binding.root as ViewGroup).removeViewAt((binding.root as ViewGroup).childCount - 1)
+        // Seleccionar el tab correspondiente
+        if (selectedType !== "") {
+            val tab = when (selectedType) {
+                "Gasto" -> binding.tabLayout.getTabAt(0)
+                "Ingreso" -> binding.tabLayout.getTabAt(1)
+                else -> null
+            }
+            tab?.select()
+            when (tab?.position) {
+                0 -> viewModel.showExpenseCategories()
+                1 -> viewModel.showIncomeCategories()
+            }
+
+        }
         binding.mainContent.visibility = View.VISIBLE
     }
 

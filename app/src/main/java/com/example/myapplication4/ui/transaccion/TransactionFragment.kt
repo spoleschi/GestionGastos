@@ -11,16 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication4.databinding.FragmentTransactionBinding
 import com.example.myapplication4.databinding.FragmentTransactionEditBinding
-import com.example.myapplication4.repository.TransactionRepository
 import com.example.myapplication4.adapters.TransactionAdapter
 import com.example.myapplication4.adapters.CategoryAdapter
-import com.example.myapplication4.repository.CategoryRepositoryOld
 import com.google.android.material.tabs.TabLayout
 import android.app.DatePickerDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.myapplication4.clases.Gasto
 import com.example.myapplication4.clases.Ingreso
 import com.example.myapplication4.clases.Transaccion
+import com.example.myapplication4.model.AppDatabase
+import com.example.myapplication4.repository.CategoryRepositoryImpl
+import com.example.myapplication4.repository.TransactionRepositoryImpl
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,19 +34,16 @@ class TransactionFragment : Fragment() {
     private val editBinding get() = _editBinding!!
 
     private val viewModel: TransactionViewModel by viewModels {
-        TransactionViewModelFactory(CategoryRepositoryOld(), TransactionRepository())
+        val db = AppDatabase.getDatabase(requireContext())
+        val categoryRepository = CategoryRepositoryImpl(db.categoriaDao())
+        val transactionRepository = TransactionRepositoryImpl(db.transactionDao(), categoryRepository)
+        TransactionViewModelFactory(categoryRepository, transactionRepository)
     }
 
     private lateinit var transactionAdapter: TransactionAdapter
     private lateinit var categoryAdapter: CategoryAdapter
 
     private var isEditMode = false
-
-//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-//        _listBinding = FragmentTransactionBinding.inflate(inflater, container, false)
-//        _editBinding = FragmentTransactionEditBinding.inflate(inflater, container, false)
-//        return listBinding.root
-//    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         // Creamos un ConstraintLayout que contendrá ambas vistas
@@ -155,8 +153,6 @@ class TransactionFragment : Fragment() {
         }
 //        editBinding.tabLayout.getTabAt(tabPosition)?.select()
         editBinding.tabLayout.visibility = View.GONE
-
-        // Llenar los campos de edición directamente
         editBinding.apply {
             etAmount.setText(transaction.monto.toString())
             tilComment.editText?.setText(transaction.desc)
@@ -291,36 +287,6 @@ class TransactionFragment : Fragment() {
             calendar.get(Calendar.DAY_OF_MONTH)
         ).show()
     }
-
-//    private fun showEditMode() {
-//        isEditMode = true
-//        (view as ViewGroup).removeAllViews()
-//        (view as ViewGroup).addView(editBinding.root)
-//    }
-//
-//    private fun showListMode() {
-//        isEditMode = false
-//        (view as ViewGroup).removeAllViews()
-//        (view as ViewGroup).addView(listBinding.root)
-//        clearEditFields()
-//    }
-
-//    private fun showListMode() {
-//        isEditMode = false
-//        val parent = (listBinding.root.parent as? ViewGroup)
-//        parent?.removeView(listBinding.root)
-//        (view as ViewGroup).removeAllViews()
-//        (view as ViewGroup).addView(listBinding.root)
-//        clearEditFields()
-//    }
-//
-//    private fun showEditMode() {
-//        isEditMode = true
-//        val parent = (editBinding.root.parent as? ViewGroup)
-//        parent?.removeView(editBinding.root)
-//        (view as ViewGroup).removeAllViews()
-//        (view as ViewGroup).addView(editBinding.root)
-//    }
 
     private fun showEditMode() {
         isEditMode = true

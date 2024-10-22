@@ -5,13 +5,16 @@ import com.example.myapplication4.clases.Categoria
 import com.example.myapplication4.clases.Gasto
 import com.example.myapplication4.clases.Ingreso
 import com.example.myapplication4.clases.Transaccion
-import com.example.myapplication4.repository.CategoryRepositoryOld
+import com.example.myapplication4.repository.CategoryRepository
 import com.example.myapplication4.repository.TransactionRepository
 import java.time.LocalDate
 import java.util.*
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 
 class TransactionViewModel(
-    private val categoryRepository: CategoryRepositoryOld,
+    private val categoryRepository: CategoryRepository,
     private val transactionRepository: TransactionRepository
 ) : ViewModel() {
 
@@ -21,8 +24,8 @@ class TransactionViewModel(
     private val _currentCategories = MutableLiveData<List<Categoria>>()
     val currentCategories: LiveData<List<Categoria>> = _currentCategories
 
-    private val _selectedCategory = MutableLiveData<Categoria>()
-    val selectedCategory: LiveData<Categoria> = _selectedCategory
+    private val _selectedCategory = MutableLiveData<Categoria?>()
+    val selectedCategory: LiveData<Categoria?> = _selectedCategory
 
     private val _transactionType = MutableLiveData<TransactionType>()
     val transactionType: LiveData<TransactionType> = _transactionType
@@ -43,24 +46,35 @@ class TransactionViewModel(
     private var currentType = TransactionType.EXPENSE
     private var editingTransaction: Transaccion? = null
 
-
     init {
         _transactionType.value = TransactionType.EXPENSE
         _selectedDate.value = Calendar.getInstance()
         loadTransactions()
-        showExpenseCategories()
+        viewModelScope.launch {
+            showExpenseCategories()
+        }
     }
 
     private fun loadTransactions() {
-//        val allTransactions = transactionRepository.getAllTransactions()
-        val allTransactions = when (_transactionType.value) {
-            TransactionType.EXPENSE -> transactionRepository.getExpenses()
-            TransactionType.INCOME -> transactionRepository.getIncomes()
-            else ->  transactionRepository.getExpenses()
+        viewModelScope.launch {
+            when (_transactionType.value) {
+                TransactionType.EXPENSE -> {
+                    transactionRepository.expenses.collect { expenses ->
+                        _transactions.value = filterTransactionsByPeriod(expenses)
+                    }
+                }
+                TransactionType.INCOME -> {
+                    transactionRepository.incomes.collect { incomes ->
+                        _transactions.value = filterTransactionsByPeriod(incomes)
+                    }
+                }
+                else -> {
+                    transactionRepository.expenses.collect { expenses ->
+                        _transactions.value = filterTransactionsByPeriod(expenses)
+                    }
+                }
+            }
         }
-
-
-        _transactions.value = filterTransactionsByPeriod(allTransactions)
     }
 
     private fun filterTransactionsByPeriod(transactions: List<Transaccion>): List<Transaccion> {
@@ -76,33 +90,90 @@ class TransactionViewModel(
 
     fun setTransactionType(type: TransactionType) {
         _transactionType.value = type
-        when (type) {
-            TransactionType.EXPENSE -> {
-                showExpenseCategories()
-                showExpenses()
-            }
-            TransactionType.INCOME -> {
-                showIncomeCategories()
-                showIncomes()
+        viewModelScope.launch {
+            when (type) {
+                TransactionType.EXPENSE -> {
+                    showExpenseCategories()
+                    showExpenses()
+                }
+                TransactionType.INCOME -> {
+                    showIncomeCategories()
+                    showIncomes()
+                }
             }
         }
     }
 
-    fun showExpenseCategories() {
-        _currentCategories.value = categoryRepository.getExpenseCategories()
+    private suspend fun showExpenseCategories() {
+        categoryRepository.expenseCategories.collect { categories ->
+            _currentCategories.value = categories
+        }
     }
 
-    fun showIncomeCategories() {
-        _currentCategories.value = categoryRepository.getIncomeCategories()
-    }
-    fun showExpenses() {
-        _transactions.value = transactionRepository.getExpenses()
-    }
-
-    fun showIncomes() {
-        _transactions.value = transactionRepository.getIncomes()
+    private suspend fun showIncomeCategories() {
+        categoryRepository.incomeCategories.collect { categories ->
+            _currentCategories.value = categories
+        }
     }
 
+    private fun showExpenses() {
+        viewModelScope.launch {
+            transactionRepository.expenses.collect {
+                _transactions.value = it
+            }
+        }
+    }
+
+    private fun showIncomes() {
+        viewModelScope.launch {
+            transactionRepository.incomes.collect {
+                _transactions.value = it
+            }
+        }
+    }
+
+    fun saveTransaction(amount: Double, comment: String, installments: Int, interestRate: Double) {
+        viewModelScope.launch {
+            val category = _selectedCategory.value ?: return@launch
+            val date = _selectedDate.value ?: return@launch
+            val localDate = LocalDate.of(
+                date.get(Calendar.YEAR),
+                date.get(Calendar.MONTH) + 1,
+                date.get(Calendar.DAY_OF_MONTH)
+            )
+
+            val transaction = when (_transactionType.value) {
+                TransactionType.EXPENSE -> Gasto(
+                    idGasto = editingTransaction?.id ?: generateId(),
+                    descGasto = comment,
+                    montoGasto = amount.toFloat(),
+                    fechaGasto = localDate,
+                    categoriaGasto = category,
+                    cantCuotas = installments,
+                    interes = interestRate.toFloat()
+                )
+                TransactionType.INCOME -> Ingreso(
+                    idIngreso = editingTransaction?.id ?: generateId(),
+                    descIngreso = comment,
+                    montoIngreso = amount.toFloat(),
+                    fechaIngreso = localDate,
+                    categoriaIngreso = category
+                )
+                null -> return@launch
+            }
+
+            if (editingTransaction != null) {
+                transactionRepository.updateTransaction(transaction)
+            } else {
+                transactionRepository.addTransaction(transaction)
+            }
+
+            loadTransactions()
+            resetEditFields()
+        }
+    }
+
+    // Los demás métodos se mantienen igual ya que no interactúan directamente con el repositorio
     fun setPeriod(period: Period) {
         currentPeriod = period
         loadTransactions()
@@ -164,52 +235,16 @@ class TransactionViewModel(
         _interestRate.value = 0.0
     }
 
-    fun saveTransaction(amount: Double, comment: String, installments: Int, interestRate: Double) {
-        val category = _selectedCategory.value ?: return
-        val date = _selectedDate.value ?: return
-        val localDate = LocalDate.of(date.get(Calendar.YEAR), date.get(Calendar.MONTH) + 1, date.get(Calendar.DAY_OF_MONTH))
-
-        val transaction = when (_transactionType.value) {
-            TransactionType.EXPENSE -> Gasto(
-                idGasto = editingTransaction?.id ?: generateId(),
-                descGasto = comment,
-                montoGasto = amount.toFloat(),
-                fechaGasto = localDate,
-                categoriaGasto = category,
-                cantCuotas = installments,
-                interes = interestRate.toFloat()
-            )
-            TransactionType.INCOME -> Ingreso(
-                idIngreso = editingTransaction?.id ?: generateId(),
-                descIngreso = comment,
-                montoIngreso = amount.toFloat(),
-                fechaIngreso = localDate,
-                categoriaIngreso = category
-            )
-            null -> return
-        }
-
-        if (editingTransaction != null) {
-            transactionRepository.updateTransaction(transaction)
-        } else {
-            transactionRepository.addTransaction(transaction)
-        }
-
-        loadTransactions()
-        resetEditFields()
-    }
-
     private fun generateId(): Int {
         return (_transactions.value?.size ?: 0) + 1
     }
 
-    fun setEditingTransaction(transaction: Transaccion?) {
+    fun getEditingTransaction(): Transaccion? = editingTransaction
+
+    fun setEditingTransaction(transaction: Transaccion) {
         editingTransaction = transaction
     }
-
-    fun getEditingTransaction(): Transaccion? = editingTransaction
 }
-
 enum class TransactionType {
     EXPENSE, INCOME
 }
@@ -219,7 +254,7 @@ enum class Period {
 }
 
 class TransactionViewModelFactory(
-    private val categoryRepository: CategoryRepositoryOld,
+    private val categoryRepository: CategoryRepository,
     private val transactionRepository: TransactionRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
