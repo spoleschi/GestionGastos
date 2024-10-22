@@ -5,13 +5,13 @@ import com.example.myapplication4.clases.Categoria
 import com.example.myapplication4.clases.Gasto
 import com.example.myapplication4.clases.Ingreso
 import com.example.myapplication4.clases.Transaccion
-import com.example.myapplication4.repository.CategoryRepository
+import com.example.myapplication4.repository.CategoryRepositoryOld
 import com.example.myapplication4.repository.TransactionRepository
 import java.util.Calendar
 import java.time.LocalDate
 
 class TransactionEditViewModel(
-    private val categoryRepository: CategoryRepository,
+    private val categoryRepository: CategoryRepositoryOld,
     private val transactionRepository: TransactionRepository
 ) : ViewModel() {
 
@@ -137,7 +137,7 @@ class TransactionEditViewModel(
 //}
 
 class TransactionEditViewModelFactory(
-    private val categoryRepository: CategoryRepository,
+    private val categoryRepository: CategoryRepositoryOld,
     private val transactionRepository: TransactionRepository
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

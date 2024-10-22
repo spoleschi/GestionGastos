@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -54,5 +55,13 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.gsonConverter)
+
+    // Dependencias de Room
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    // Para Kotlin usar kapt en lugar de annotationProcessor
+    kapt(libs.androidx.room.compiler)
+    // Soporte para corrutinas con Room
+    implementation(libs.androidx.room.ktx)
 }
 

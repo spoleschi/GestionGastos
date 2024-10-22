@@ -14,7 +14,7 @@ import com.example.myapplication4.databinding.FragmentTransactionEditBinding
 import com.example.myapplication4.repository.TransactionRepository
 import com.example.myapplication4.adapters.TransactionAdapter
 import com.example.myapplication4.adapters.CategoryAdapter
-import com.example.myapplication4.repository.CategoryRepository
+import com.example.myapplication4.repository.CategoryRepositoryOld
 import com.google.android.material.tabs.TabLayout
 import android.app.DatePickerDialog
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -33,7 +33,7 @@ class TransactionFragment : Fragment() {
     private val editBinding get() = _editBinding!!
 
     private val viewModel: TransactionViewModel by viewModels {
-        TransactionViewModelFactory(CategoryRepository(), TransactionRepository())
+        TransactionViewModelFactory(CategoryRepositoryOld(), TransactionRepository())
     }
 
     private lateinit var transactionAdapter: TransactionAdapter

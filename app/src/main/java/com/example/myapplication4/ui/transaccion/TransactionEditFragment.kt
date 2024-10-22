@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication4.adapters.CategoryAdapter
 import com.example.myapplication4.databinding.FragmentTransactionEditBinding
-import com.example.myapplication4.repository.CategoryRepository
+import com.example.myapplication4.repository.CategoryRepositoryOld
 import com.example.myapplication4.repository.TransactionRepository
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -28,7 +27,7 @@ class TransactionEditFragment : Fragment() {
     private lateinit var categoryAdapter: CategoryAdapter
 
     private val viewModel: TransactionEditViewModel by viewModels {
-        TransactionEditViewModelFactory(CategoryRepository(), TransactionRepository())
+        TransactionEditViewModelFactory(CategoryRepositoryOld(), TransactionRepository())
     }
 
     override fun onCreateView(

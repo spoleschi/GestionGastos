@@ -181,56 +181,73 @@
 
 package com.example.myapplication4.ui.categoria
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.myapplication4.clases.Categoria
 import com.example.myapplication4.repository.CategoryRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class CategoriaViewModel(private val repository: CategoryRepository) : ViewModel() {
-    private val expenseCategories: LiveData<List<Categoria>> = repository.expenseCategories
-    private val incomeCategories: LiveData<List<Categoria>> = repository.incomeCategories
-
-    private val _currentCategories = MutableLiveData<List<Categoria>>()
-    val currentCategories: LiveData<List<Categoria>> = _currentCategories
+    private val _currentCategories = MutableStateFlow<List<Categoria>>(emptyList())
+    val currentCategories: StateFlow<List<Categoria>> = _currentCategories.asStateFlow()
 
     private var currentType: String = "Gasto"
 
     init {
-        showExpenseCategories()
+//        showExpenseCategories()
+        viewModelScope.launch {
+            repository.initializeDefaultCategories() // Inicializo categorías por defecto
+            showExpenseCategories() // Mostrar categorías de gastos después de la inicialización
+        }
     }
 
     fun showExpenseCategories() {
         currentType = "Gasto"
-        _currentCategories.value = expenseCategories.value
+        viewModelScope.launch {
+            repository.expenseCategories.collect { categories ->
+                _currentCategories.value = categories
+            }
+        }
     }
 
     fun showIncomeCategories() {
         currentType = "Ingreso"
-        _currentCategories.value = incomeCategories.value
+        viewModelScope.launch {
+            repository.incomeCategories.collect { categories ->
+                _currentCategories.value = categories
+            }
+        }
     }
 
     fun addCategory(newCategory: Categoria) {
-        repository.addCategory(newCategory)
-        updateCurrentCategories()
+        viewModelScope.launch {
+            repository.addCategory(newCategory)
+        }
     }
 
     fun updateCategory(updatedCategory: Categoria) {
-        repository.updateCategory(updatedCategory)
-        updateCurrentCategories()
+        viewModelScope.launch {
+            repository.updateCategory(updatedCategory)
+        }
     }
 
     fun deleteCategory(categoria: Categoria) {
+        viewModelScope.launch {
             repository.deleteCategory(categoria)
+        }
     }
 
-    fun getCategoryById(id: Int): Categoria? = repository.findCategoryById(id)
+    suspend fun getCategoryById(id: Int): Categoria? {
+        return repository.findCategoryById(id)
+    }
 
-    fun getAllCategories(): List<Categoria> = repository.getAllCategories()
-
-    private fun updateCurrentCategories() {
-        _currentCategories.value = if (currentType == "Gasto") expenseCategories.value else incomeCategories.value
+    fun getAllCategories(): Flow<List<Categoria>> {
+        return repository.getAllCategories()
     }
 
     class Factory(private val repository: CategoryRepository) : ViewModelProvider.Factory {

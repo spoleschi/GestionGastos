@@ -1,5 +1,5 @@
-package com.example.myapplication4.ui.categoria
 
+package com.example.myapplication4.ui.categoria
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,7 +16,11 @@ import com.example.myapplication4.adapters.ColorPickerAdapter
 import com.example.myapplication4.databinding.FragmentCategoriaBinding
 import com.example.myapplication4.databinding.FragmentCategoryEditBinding
 import com.example.myapplication4.repository.CategoryRepository
+import com.example.myapplication4.repository.CategoryRepositoryImpl
 import com.google.android.material.tabs.TabLayout
+import androidx.lifecycle.lifecycleScope
+import com.example.myapplication4.model.AppDatabase
+import kotlinx.coroutines.launch
 
 class CategoriaFragment : Fragment() {
     private var _binding: FragmentCategoriaBinding? = null
@@ -30,32 +34,39 @@ class CategoriaFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCategoriaBinding.inflate(inflater, container, false)
-//        viewModel = ViewModelProvider(requireActivity())[CategoriaViewModel::class.java]
-        val repository = CategoryRepository()
-        viewModel = ViewModelProvider(requireActivity(), CategoriaViewModel.Factory(repository))[CategoriaViewModel::class.java]
+        val database = AppDatabase.getDatabase(requireContext())
+        val repository: CategoryRepository = CategoryRepositoryImpl(database.categoriaDao())
 
-        setupRecyclerView()
-        setupTabLayout()
-        observeCategories()
-
-        // Manejar el clic en el botón flotante
-
-        binding.fabCreate.setOnClickListener {
-            showEditView(null)
-        }
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            CategoriaViewModel.Factory(repository)
+        )[CategoriaViewModel::class.java]
 
         return binding.root
     }
 
-    private fun setupRecyclerView() {
-        val recyclerView = binding!!.recyclerView
-        categoriesAdapter = CategoriesAdapter(emptyList()) { categoria ->
-            showEditView(categoria) // Pasar la categoría seleccionada para edición
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Inicializar los componentes en el orden correcto
+        setupRecyclerView()
+        setupTabLayout()
+        observeCategories()
+
+        binding.fabCreate.setOnClickListener {
+            showEditView(null)
         }
-        recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 4)
-        recyclerView.adapter = categoriesAdapter
     }
 
+    private fun setupRecyclerView() {
+        categoriesAdapter = CategoriesAdapter(emptyList()) { categoria ->
+            showEditView(categoria)
+        }
+        binding.recyclerView.apply {
+            layoutManager = GridLayoutManager(context, 4)
+            adapter = categoriesAdapter
+        }
+    }
     private fun setupTabLayout() {
         val tabLayout = binding!!.tabLayout
         tabLayout.addTab(tabLayout.newTab().setText("Gastos"))
@@ -74,8 +85,10 @@ class CategoriaFragment : Fragment() {
     }
 
     private fun observeCategories() {
-        viewModel.currentCategories.observe(viewLifecycleOwner) { categories ->
-            categoriesAdapter.updateCategories(categories)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.currentCategories.collect { categories ->
+                categoriesAdapter.updateCategories(categories)
+            }
         }
     }
 
@@ -135,7 +148,7 @@ class CategoriaFragment : Fragment() {
 
         if (oldCategoria == null) {
             val newCategory = Categoria(
-                id = System.currentTimeMillis().toInt(),
+                id = System.currentTimeMillis().toInt() ,
                 nombre = categoryName,
                 desc = "",
                 color = selectedColor,
