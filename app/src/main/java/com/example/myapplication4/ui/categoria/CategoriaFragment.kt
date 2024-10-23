@@ -147,7 +147,7 @@ class CategoriaFragment : Fragment() {
 
         if (oldCategoria == null) {
             val newCategory = Categoria(
-                id = System.currentTimeMillis().toInt() ,
+                id = (System.currentTimeMillis()).toInt() ,
                 nombre = categoryName,
                 desc = "",
                 color = selectedColor,

@@ -9,8 +9,5 @@ open class Transaccion(
     val fecha: LocalDate,
     val categoria: Categoria,
 //    val usuario: Usuario
-
-//    val cantCuotas: Int = 1,
-//    val interes: Float
 )
 
