@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -47,27 +48,28 @@ class CategoriaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Inicializar los componentes en el orden correcto
         setupRecyclerView()
         setupTabLayout()
         observeCategories()
 
         binding.fabCreate.setOnClickListener {
-            showEditView(null)
+            // Pasar el tipo actual al showEditView
+            showEditView(null, viewModel.getCurrentType())
         }
     }
 
     private fun setupRecyclerView() {
         categoriesAdapter = CategoriesAdapter(emptyList()) { categoria ->
-            showEditView(categoria)
+            showEditView(categoria, categoria.tipo)
         }
         binding.recyclerView.apply {
             layoutManager = GridLayoutManager(context, 4)
             adapter = categoriesAdapter
         }
     }
+
     private fun setupTabLayout() {
-        val tabLayout = binding!!.tabLayout
+        val tabLayout = binding.tabLayout
         tabLayout.addTab(tabLayout.newTab().setText("Gastos"))
         tabLayout.addTab(tabLayout.newTab().setText("Ingresos"))
 
@@ -91,31 +93,29 @@ class CategoriaFragment : Fragment() {
         }
     }
 
-    private fun showEditView(categoria: Categoria?) {
-        // Ocultar la vista principal
+    private fun showEditView(categoria: Categoria?, tipo: String) {
         binding.mainContent.visibility = View.GONE
-
-        // Inflar la vista de edición
         val editView = FragmentCategoryEditBinding.inflate(layoutInflater, binding.root, true)
-
-        // Configurar la vista de edición
-        setupEditView(editView, categoria)
+        setupEditView(editView, categoria, tipo)
     }
 
-    private fun setupEditView(editBinding: FragmentCategoryEditBinding, categoria: Categoria?) {
+    private fun setupEditView(editBinding: FragmentCategoryEditBinding, categoria: Categoria?, tipo: String) {
         val colors = listOf("#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#000000", "#FF9300", "#808080")
+        var selectedColor = ""
 
         if (categoria != null) {
             editBinding.etCategoryName.setText(categoria.nombre)
             editBinding.tvSelectedColor.text = "Color seleccionado: ${categoria.color}"
+            selectedColor = categoria.color
             editBinding.spinnerCategoryType.setText(categoria.tipo, false)
         } else {
             editBinding.tvSelectedColor.text = "Seleccione un color"
-            editBinding.spinnerCategoryType.setText("Gasto", false)
+            editBinding.spinnerCategoryType.setText(tipo, false)
         }
 
         editBinding.rvColorPicker.layoutManager = GridLayoutManager(requireContext(), 6)
         editBinding.rvColorPicker.adapter = ColorPickerAdapter(colors) { color ->
+            selectedColor = color
             editBinding.tvSelectedColor.text = "Color seleccionado: $color"
         }
 
@@ -124,12 +124,25 @@ class CategoriaFragment : Fragment() {
         editBinding.spinnerCategoryType.setAdapter(adapter)
 
         editBinding.btnSaveCategory.setOnClickListener {
-            saveCategory(editBinding, categoria)
+            val categoryName = editBinding.etCategoryName.text.toString().trim()
+
+            when {
+                categoryName.isEmpty() -> {
+                    editBinding.etCategoryName.error = "El nombre es requerido"
+                }
+                selectedColor.isEmpty() -> {
+                    Toast.makeText(context, "Debe seleccionar un color", Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    saveCategory(editBinding, categoria, selectedColor)
+                }
+            }
         }
+
         editBinding.btnCancel.setOnClickListener {
-            returnToMainView()
+            returnToMainView(tipo)
         }
-        // Si la categoría existe, mostrar el botón eliminar y manejar el clic
+
         if (categoria != null) {
             editBinding.btnDeleteCategory.visibility = View.VISIBLE
             editBinding.btnDeleteCategory.setOnClickListener {
@@ -140,14 +153,13 @@ class CategoriaFragment : Fragment() {
         }
     }
 
-    private fun saveCategory(editBinding: FragmentCategoryEditBinding, oldCategoria: Categoria?) {
+    private fun saveCategory(editBinding: FragmentCategoryEditBinding, oldCategoria: Categoria?, selectedColor: String) {
         val categoryName = editBinding.etCategoryName.text.toString()
-        val selectedColor = editBinding.tvSelectedColor.text.toString().substringAfter(": ")
         val selectedType = editBinding.spinnerCategoryType.text.toString()
 
         if (oldCategoria == null) {
             val newCategory = Categoria(
-                id = (System.currentTimeMillis()).toInt() ,
+                id = (System.currentTimeMillis()).toInt(),
                 nombre = categoryName,
                 desc = "",
                 color = selectedColor,
@@ -172,30 +184,28 @@ class CategoriaFragment : Fragment() {
             .setMessage("¿Estás seguro de que deseas eliminar esta categoría?")
             .setPositiveButton("Eliminar") { _, _ ->
                 viewModel.deleteCategory(categoria)
-                returnToMainView()
+                returnToMainView(categoria.tipo)
             }
             .setNegativeButton("Cancelar", null)
             .show()
     }
 
-    private fun returnToMainView(selectedType: String = "") {
-        // Remover la vista de edición y mostrar la vista principal
+    private fun returnToMainView(tipo: String) {
         (binding.root as ViewGroup).removeViewAt((binding.root as ViewGroup).childCount - 1)
-        // Seleccionar el tab correspondiente
-        if (selectedType !== "") {
-            val tab = when (selectedType) {
-                "Gasto" -> binding.tabLayout.getTabAt(0)
-                "Ingreso" -> binding.tabLayout.getTabAt(1)
-                else -> null
-            }
-            tab?.select()
-            when (tab?.position) {
-                0 -> viewModel.showExpenseCategories()
-                1 -> viewModel.showIncomeCategories()
-            }
-
-        }
         binding.mainContent.visibility = View.VISIBLE
+
+        // Seleccionar el tab correcto basado en el tipo
+        val tabIndex = when (tipo) {
+            "Gasto" -> 0
+            "Ingreso" -> 1
+            else -> 0 // Por defecto mostrar gastos
+        }
+
+        binding.tabLayout.getTabAt(tabIndex)?.select()
+        when (tabIndex) {
+            0 -> viewModel.showExpenseCategories()
+            1 -> viewModel.showIncomeCategories()
+        }
     }
 
     override fun onResume() {
@@ -203,9 +213,8 @@ class CategoriaFragment : Fragment() {
         observeCategories()
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // Clear the reference
+        _binding = null
     }
 }

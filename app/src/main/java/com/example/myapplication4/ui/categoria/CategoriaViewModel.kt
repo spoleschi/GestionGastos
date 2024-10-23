@@ -199,12 +199,13 @@ class CategoriaViewModel(private val repository: CategoryRepository) : ViewModel
     private var currentType: String = "Gasto"
 
     init {
-//        showExpenseCategories()
         viewModelScope.launch {
-            repository.initializeDefaultCategories() // Inicializo categorías por defecto
-            showExpenseCategories() // Mostrar categorías de gastos después de la inicialización
+            repository.initializeDefaultCategories()
+            showExpenseCategories()
         }
     }
+
+    fun getCurrentType(): String = currentType
 
     fun showExpenseCategories() {
         currentType = "Gasto"
