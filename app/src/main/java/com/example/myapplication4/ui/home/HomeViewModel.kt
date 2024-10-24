@@ -9,22 +9,7 @@ import com.example.myapplication4.clases.Ingreso
 import com.example.myapplication4.clases.Transaccion
 import java.time.LocalDate
 
-//class HomeViewModel : ViewModel() {
-//
-//    private val _text = MutableLiveData<String>().apply {
-//        value = "This is Home Fragment"
-//    }
-//    val text: LiveData<String> = _text
-//}
-
-
 class HomeViewModel : ViewModel() {
-//    private val _gastos = MutableLiveData<List<Gasto>>()
-//    val gastos: LiveData<List<Gasto>> = _gastos
-//
-//    private val _total = MutableLiveData<Float>()
-//    val total: LiveData<Float> = _total
-
 
     private val _transacciones = MutableLiveData<List<Transaccion>>()
     val transacciones: LiveData<List<Transaccion>> = _transacciones

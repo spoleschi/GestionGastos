@@ -38,16 +38,6 @@ class HomeFragment : Fragment() {
         observeViewModel()
     }
 
-//    private fun initUI() {
-//        val dateText = binding.dateText
-//        val currentDate = Calendar.getInstance().time
-//        val dateFormat = SimpleDateFormat("dd/MM/yy")
-//        val formattedDate = dateFormat.format(currentDate)
-//        dateText.text = formattedDate
-//
-//        binding.expensesRecyclerView.layoutManager = LinearLayoutManager(context)
-//    }
-
     private fun initUI() {
         val dateText = binding.dateText
         val currentDate = Calendar.getInstance().time
@@ -70,25 +60,7 @@ class HomeFragment : Fragment() {
         })
     }
 
-//    private fun observeViewModel() {
-//        viewModel.gastos.observe(viewLifecycleOwner) { gastos ->
-//            binding.expensesRecyclerView.adapter = GastoAdapter(gastos)
-//        }
-//
-//        viewModel.total.observe(viewLifecycleOwner) { total ->
-//            binding.totalAmount.text = "$ %.2f".format(total)
-//        }
-//    }
-
     private fun observeViewModel() {
-        viewModel.transacciones.observe(viewLifecycleOwner) { transacciones ->
-            updateRecyclerView(transacciones)
-        }
-
-        viewModel.total.observe(viewLifecycleOwner) { total ->
-            binding.totalAmount.text = "$ %.2f".format(total)
-        }
-
         viewModel.tipoTransaccion.observe(viewLifecycleOwner) { tipo ->
             binding.totalLabel.text = when (tipo) {
                 TipoTransaccion.GASTO -> "Total Gastos"
