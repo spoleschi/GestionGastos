@@ -10,15 +10,17 @@ import androidx.room.TypeConverters
     entities = [
         CategoriaEntity::class,
         TransactionEntity::class,
-        CuotaEntity::class
+        CuotaEntity::class,
+        UserEntity::class
     ],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun categoriaDao(): CategoriaDao
     abstract fun transactionDao(): TransactionDao
+    abstract fun userDao(): UserDao
 
     companion object {
         @Volatile

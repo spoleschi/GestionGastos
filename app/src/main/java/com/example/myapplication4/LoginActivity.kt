@@ -1,6 +1,5 @@
 package com.example.myapplication4
 
-// LoginActivity.kt
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,13 +7,29 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import com.example.myapplication4.MainActivity
-import com.example.myapplication4.R
+import com.example.myapplication4.model.AppDatabase
+import com.example.myapplication4.repository.UserRepositoryImpl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var userRepository: UserRepositoryImpl
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        // Inicializar el repositorio
+        val database = AppDatabase.getDatabase(applicationContext)
+        userRepository = UserRepositoryImpl(database.userDao())
+
+        // Inicializar usuarios por defecto (Por si no hay ninguno en la BD)
+        CoroutineScope(Dispatchers.IO).launch {
+            userRepository.initializeDefaultUsers()
+        }
 
         val emailInput: EditText = findViewById(R.id.emailInput)
         val passwordInput: EditText = findViewById(R.id.passwordInput)
@@ -23,12 +38,34 @@ class LoginActivity : AppCompatActivity() {
         val registerPromptText: TextView = findViewById(R.id.registerPromptText)
 
         loginButton.setOnClickListener {
-            val email = emailInput.text.toString()
+            val username = emailInput.text.toString()
             val password = passwordInput.text.toString()
-            // Aquí iría la lógica de autenticación
-            Toast.makeText(this, "Iniciando sesión con: $email", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val user = userRepository.authenticateUser(username, password)
+
+                withContext(Dispatchers.Main) {
+                    if (user != null) {
+                        // Usuario autenticado correctamente
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        intent.putExtra("USER_ID", user.id)
+                        intent.putExtra("USER_NAME", user.nombre)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Usuario o contraseña incorrectos",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
         }
 
         forgotPasswordText.setOnClickListener {
