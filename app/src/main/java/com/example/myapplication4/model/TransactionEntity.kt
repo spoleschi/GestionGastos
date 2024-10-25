@@ -17,6 +17,7 @@ import java.time.LocalDate
 data class TransactionEntity(
     @PrimaryKey
     val id: Int,
+    //@PrimaryKey(autoGenerate = true) val id: Int = 0,
     val descripcion: String,
     val monto: Float,
     val fecha: LocalDate,
