@@ -97,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:padding="4dp">
 
             <Button
                 android:id="@+id/dayButton"
@@ -136,20 +136,20 @@
                 android:textSize="12sp" />
 
             <Button
-                android:id="@+id/periodButton"
+                android:id="@+id/allButton"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Período"
-                android:textSize="12sp" />
+                android:text="Todos"
+                android:textSize="11sp" />
 
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/expensesRecyclerView"
+        android:id="@+id/RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/periodCard"
