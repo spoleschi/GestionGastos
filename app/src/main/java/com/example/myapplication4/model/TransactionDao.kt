@@ -52,5 +52,4 @@ interface TransactionDao {
         // Asumiendo que tienes el TransactionEntity
         getTransactionById(transactionId)?.let { deleteTransaction(it) }
     }
-
 }

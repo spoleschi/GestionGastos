@@ -79,3 +79,19 @@ fun CuotaEntity.toDomain() = Cuota(
     nroCuota = nroCuota,
     fechaPago = fechaPago
 )
+
+fun UserEntity.toDomain() = Usuario(
+    id = id,
+    nombre = nombre,
+    username = username,
+    pwd = pwd,
+    saldo = saldo
+)
+
+fun Usuario.toEntity() = UserEntity(
+    id = id,
+    nombre = nombre,
+    username = username,
+    pwd = pwd,
+    saldo = saldo
+)

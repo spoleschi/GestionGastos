@@ -11,7 +11,6 @@ import java.time.LocalDate
 import java.util.*
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.collect
 
 class TransactionViewModel(
     private val categoryRepository: CategoryRepository,
@@ -94,14 +93,15 @@ class TransactionViewModel(
             when (type) {
                 TransactionType.EXPENSE -> {
                     showExpenseCategories()
-                    showExpenses()
+//                    showExpenses()
                 }
                 TransactionType.INCOME -> {
                     showIncomeCategories()
-                    showIncomes()
+//                    showIncomes()
                 }
             }
         }
+        loadTransactions()
     }
 
     private suspend fun showExpenseCategories() {
@@ -235,8 +235,12 @@ class TransactionViewModel(
         _interestRate.value = 0.0
     }
 
-    private fun generateId(): Int {
-        return (_transactions.value?.size ?: 0) + 1
+//    private fun generateId(): Int {
+//        return (_transactions.value?.size ?: 0) + 1
+//    }
+
+    private fun generateId(min: Int = 1, max: Int = 1000000): Int {
+        return Random().nextInt(max - min + 1) + min
     }
 
     fun getEditingTransaction(): Transaccion? = editingTransaction
