@@ -1,8 +1,11 @@
 package com.example.myapplication4
 
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -13,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication4.clases.Usuario
 import com.example.myapplication4.databinding.ActivityMainBinding
+import com.example.myapplication4.notifications.NotificationWorker
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,6 +50,13 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        // Request notification permission for Android 13 and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestNotificationPermission()
+        } else {
+            scheduleNotifications()
+        }
+
         val nuevoUser = Usuario(
             1,
             "a",
@@ -75,5 +86,17 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestNotificationPermission() {
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                scheduleNotifications()
+            }
+        }.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    private fun scheduleNotifications() {
+        NotificationWorker.schedule(this)
+    }
 
 }

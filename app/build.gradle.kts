@@ -63,5 +63,7 @@ dependencies {
     kapt(libs.androidx.room.compiler)
     // Soporte para corrutinas con Room
     implementation(libs.androidx.room.ktx)
+
+    implementation(libs.notifications)
 }
 
