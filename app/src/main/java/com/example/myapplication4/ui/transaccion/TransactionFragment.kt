@@ -337,3 +337,4 @@ class TransactionFragment : Fragment() {
         _editBinding = null
     }
 }
+
