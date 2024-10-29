@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication4.databinding.FragmentTransactionBinding
 import com.example.myapplication4.databinding.FragmentTransactionEditBinding
-import com.example.myapplication4.adapters.TransactionAdapter
-import com.example.myapplication4.adapters.CategoryAdapter
+import com.example.myapplication4.ui.adapters.TransactionAdapter
+import com.example.myapplication4.ui.adapters.CategoryAdapter
 import com.google.android.material.tabs.TabLayout
 import android.app.DatePickerDialog
 import androidx.constraintlayout.widget.ConstraintLayout

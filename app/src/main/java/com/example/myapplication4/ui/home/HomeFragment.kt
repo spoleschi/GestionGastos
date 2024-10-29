@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.myapplication4.adapters.CategorySummaryAdapter
+import com.example.myapplication4.ui.adapters.CategorySummaryAdapter
 import com.example.myapplication4.databinding.FragmentHomeBinding
 import com.example.myapplication4.model.AppDatabase
 import com.example.myapplication4.repository.CategoryRepositoryImpl
