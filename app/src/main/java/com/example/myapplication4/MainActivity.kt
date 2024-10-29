@@ -18,14 +18,26 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+    private var userId: Int = -1
+    private var userName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Obtener los datos del usuario del Intent
+        userId = intent.getIntExtra("USER_ID", -1)
+        userName = intent.getStringExtra("USER_NAME") ?: ""
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.appBarMain.toolbar)
+
+        // Configurar la información del usuario en el Navigation Drawer
+        val navigationView = binding.navView
+        val headerView = navigationView.getHeaderView(0)
+
+        headerView.findViewById<TextView>(R.id.nav_header_name)?.text = userName
 
 //        binding.appBarMain.fab.setOnClickListener { view ->
 //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -46,22 +58,9 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val nuevoUser = Usuario(
-            1,
-            "a",
-            "b",
-            "c",
-            10f
-        );
-
         val totalAmount: TextView = findViewById(R.id.totalAmount);
 
-        totalAmount.text = "$" + nuevoUser.saldo.toString();
-
-        nuevoUser.actualizarSaldo(50f);
-
-        //Se tiene que volver a definir el valor del textView
-        totalAmount.text = "$" + nuevoUser.saldo.toString();
+        //totalAmount.text = "$" + User.saldo.toString();
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -74,6 +73,4 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
-
-
 }
