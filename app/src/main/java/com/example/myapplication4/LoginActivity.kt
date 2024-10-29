@@ -68,6 +68,12 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+        passwordInput.setOnEditorActionListener{
+                _, _, _ ->
+            loginButton.performClick()
+            true
+        }
+
         forgotPasswordText.setOnClickListener {
             // Aquí iría la lógica para recuperar la contraseña
             Toast.makeText(this, "Recuperar contraseña", Toast.LENGTH_SHORT).show()

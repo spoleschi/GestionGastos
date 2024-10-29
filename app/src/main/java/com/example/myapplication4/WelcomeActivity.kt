@@ -16,13 +16,12 @@ class WelcomeActivity : AppCompatActivity() {
         val loginButton: Button = findViewById(R.id.loginButton)
 
         registerButton.setOnClickListener {
-            Toast.makeText(this, "Registro iniciado", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Funcionalidad no implementada", Toast.LENGTH_SHORT).show()
             // Aquí iría la lógica para iniciar el proceso de registro
         }
 
         loginButton.setOnClickListener {
-            Toast.makeText(this, "Inicio de sesión iniciado", Toast.LENGTH_SHORT).show()
-            // Aquí iría la lógica para iniciar el proceso de inicio de sesión
+            //Toast.makeText(this, "Inicio de sesión iniciado", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
