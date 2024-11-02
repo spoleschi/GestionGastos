@@ -1,14 +1,24 @@
 package com.example.myapplication4.ui.home
 
+import NotificationWorker
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.example.myapplication4.adapters.CategorySummaryAdapter
 import com.example.myapplication4.databinding.FragmentHomeBinding
 import com.example.myapplication4.model.AppDatabase
@@ -17,6 +27,14 @@ import com.example.myapplication4.repository.TransactionRepositoryImpl
 import com.google.android.material.tabs.TabLayout
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
+import androidx.work.*
+import java.time.DayOfWeek
+import java.time.Duration
+import java.time.LocalDateTime
+import java.time.temporal.TemporalAdjusters
+import java.util.concurrent.TimeUnit
+
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -39,6 +57,7 @@ class HomeFragment : Fragment() {
         setupRecyclerView()
         initUI()
         observeViewModel()
+        checkAndRequestNotificationPermission()
     }
 
     private fun setupViewModel() {
@@ -150,6 +169,78 @@ class HomeFragment : Fragment() {
                 TipoTransaccion.INGRESO -> "Total Ingresos"
             }
         }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            scheduleNotification()
+        }
+    }
+
+    private fun checkAndRequestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    scheduleNotification()
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
+                    // Optionally show UI explaining why notifications are needed
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                else -> {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        } else {
+            // For Android 12 and below, just schedule the notification
+            scheduleNotification()
+        }
+    }
+
+    private fun scheduleNotification() {
+        // Create constraints
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+            .build()
+
+        // Create periodic work request that runs every week on Sunday
+        val notificationWork = PeriodicWorkRequest.Builder(
+            NotificationWorker::class.java,
+            7, TimeUnit.DAYS
+        )
+            .setConstraints(constraints)
+            .setInitialDelay(getInitialDelay())
+            .build()
+
+        // Schedule the work
+        context?.let { ctx ->
+            WorkManager.getInstance(ctx)
+                .enqueueUniquePeriodicWork(
+                    "weekly_notification",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    notificationWork
+                )
+        }
+    }
+
+    private fun getInitialDelay(): Duration {
+        val current = LocalDateTime.now()
+        var nextTuesday = current.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+            .withHour(21)
+            .withMinute(0)
+            .withSecond(0)
+
+        // If current time is after today's scheduled time, get next week's Tuesday
+        if (current.isAfter(nextTuesday)) {
+            nextTuesday = nextTuesday.plusWeeks(1)
+        }
+
+        return Duration.between(current, nextTuesday)
     }
 
     override fun onDestroyView() {
