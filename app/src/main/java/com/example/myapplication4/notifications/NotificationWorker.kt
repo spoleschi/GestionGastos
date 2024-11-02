@@ -1,78 +1,56 @@
-package com.example.myapplication4.notifications
-
-// NotificationWorker.kt
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
-import androidx.work.*
-import com.example.myapplication4.MainActivity
-import java.util.concurrent.TimeUnit
-import java.util.Calendar
+import android.os.Build
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 
+// Create NotificationWorker class (put this in a separate file)
 class NotificationWorker(
-    private val context: Context,
-    private val workerParams: WorkerParameters
+    context: Context,
+    workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
 
-    private val notificationHelper = NotificationHelper(context)
+    companion object {
+        private const val CHANNEL_ID = "weekly_reminder"
+        private const val CHANNEL_NAME = "Weekly Reminders"
+        private const val NOTIFICATION_ID = 1
+    }
 
     override fun doWork(): Result {
-        // Show the notification
-        notificationHelper.showNotification(
-            notificationId = 1,
-            title = "Recordatorio Semanal",
-            message = "No te olivides de ingresar tus gastos e ingresos!",
-            targetActivity = MainActivity::class.java
-        )
+        showNotification()
         return Result.success()
     }
 
-    companion object {
-        private const val WEEKLY_NOTIFICATION_WORK = "weekly_notification_work"
+    private fun showNotification() {
+        val context = applicationContext
 
-        fun schedule(context: Context) {
-            // Calculate initial delay until next Sunday at 10:00 AM
-            val calendar = Calendar.getInstance()
-            val now = calendar.timeInMillis
-
-            // Set target time to 10:00 AM
-            calendar.set(Calendar.HOUR_OF_DAY, 10)
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
-
-            // If today is after 10:00 AM, move to next week
-            if (calendar.timeInMillis <= now) {
-                calendar.add(Calendar.DAY_OF_MONTH, 1)
-            }
-
-            // Find next Sunday
-            while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
-                calendar.add(Calendar.DAY_OF_MONTH, 1)
-            }
-
-            val initialDelay = calendar.timeInMillis - now
-
-            // Create the periodic WorkRequest
-            val notificationWorkRequest = PeriodicWorkRequestBuilder<NotificationWorker>(
-                7, TimeUnit.DAYS) // Repeat every 7 days
-                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
-                .setConstraints(
-                    Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
-                        .build()
-                )
-                .build()
-
-            // Schedule the work
-            WorkManager.getInstance(context)
-                .enqueueUniquePeriodicWork(
-                    WEEKLY_NOTIFICATION_WORK,
-                    ExistingPeriodicWorkPolicy.UPDATE,
-                    notificationWorkRequest
-                )
+        // Create notification channel for Android O and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            val notificationManager = context.getSystemService(NotificationManager::class.java)
+            notificationManager?.createNotificationChannel(channel)
         }
 
-        fun cancel(context: Context) {
-            WorkManager.getInstance(context)
-                .cancelUniqueWork(WEEKLY_NOTIFICATION_WORK)
+        // Build the notification
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setContentTitle("Recordatorio Semanal")
+            .setContentText("No te olvides de registrar tus movimientos!")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+
+        // Show the notification
+        try {
+            NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build())
+        } catch (e: SecurityException) {
+            e.printStackTrace()
         }
     }
 }
