@@ -20,7 +20,6 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import com.example.myapplication4.adapters.CategorySummaryAdapter
 import com.example.myapplication4.ui.adapters.CategorySummaryAdapter
 
 import com.example.myapplication4.databinding.FragmentHomeBinding
