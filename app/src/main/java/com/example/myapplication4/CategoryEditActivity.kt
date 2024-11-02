@@ -7,7 +7,7 @@ import android.widget.ArrayAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication4.clases.Categoria
-import com.example.myapplication4.adapters.ColorPickerAdapter
+import com.example.myapplication4.ui.adapters.ColorPickerAdapter
 import com.example.myapplication4.ui.categoria.CategoriaViewModel
 
 

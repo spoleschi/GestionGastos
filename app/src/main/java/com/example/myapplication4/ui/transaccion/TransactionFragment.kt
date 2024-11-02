@@ -1,5 +1,6 @@
 package com.example.myapplication4.ui.transaccion
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication4.databinding.FragmentTransactionBinding
 import com.example.myapplication4.databinding.FragmentTransactionEditBinding
-import com.example.myapplication4.adapters.TransactionAdapter
-import com.example.myapplication4.adapters.CategoryAdapter
+import com.example.myapplication4.ui.adapters.TransactionAdapter
+import com.example.myapplication4.ui.adapters.CategoryAdapter
 import com.google.android.material.tabs.TabLayout
 import android.app.DatePickerDialog
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -103,13 +104,13 @@ class TransactionFragment : Fragment() {
                 when (tab?.position) {
                     0 -> {
                         viewModel.setTransactionType(TransactionType.EXPENSE)
-                        editBinding.tilCuotas.visibility = View.VISIBLE
-                        editBinding.tilInteres.visibility = View.VISIBLE
+//                        editBinding.tilCuotas.visibility = View.VISIBLE
+//                        editBinding.tilInteres.visibility = View.VISIBLE
                     }
                     1 -> {
                         viewModel.setTransactionType(TransactionType.INCOME)
-                        editBinding.tilCuotas.visibility = View.GONE
-                        editBinding.tilInteres.visibility = View.GONE
+//                        editBinding.tilCuotas.visibility = View.GONE
+//                        editBinding.tilInteres.visibility = View.GONE
                     }
                 }
             }
@@ -129,7 +130,7 @@ class TransactionFragment : Fragment() {
     private fun setupFab() {
         listBinding.fabAddTransaction.setOnClickListener {
             viewModel.prepareForNewTransaction()
-            showEditMode()
+            showEditMode(isNewTransaction = true)
             editBinding.tabLayout.getTabAt(listBinding.tabLayout.selectedTabPosition)?.select()
             editBinding.tabLayout.visibility = View.VISIBLE
         }
@@ -177,7 +178,7 @@ class TransactionFragment : Fragment() {
         viewModel.setEditingTransaction(transaction)
 
         // Mostrar la vista de edición
-        showEditMode()
+        showEditMode(isNewTransaction = false)
     }
 
     private fun setupCategoryRecyclerView() {
@@ -221,6 +222,19 @@ class TransactionFragment : Fragment() {
                 showErrorMessage()
             }
         }
+        editBinding.btnDeleteTransaction.setOnClickListener {
+            viewModel.getEditingTransaction()?.let { transaction ->
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Eliminar Transacción")
+                    .setMessage("¿Está seguro que desea eliminar esta transacción?")
+                    .setPositiveButton("Eliminar") { _, _ ->
+                        viewModel.deleteTransaction(transaction)
+                        showListMode()
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            }
+        }
 
         editBinding.btnCancel.setOnClickListener {
             showListMode()
@@ -232,13 +246,13 @@ class TransactionFragment : Fragment() {
                 when (tab?.position) {
                     0 -> {
                         viewModel.setTransactionType(TransactionType.EXPENSE)
-                        editBinding.tilCuotas.visibility = View.VISIBLE
-                        editBinding.tilInteres.visibility = View.VISIBLE
+//                        editBinding.tilCuotas.visibility = View.VISIBLE
+//                        editBinding.tilInteres.visibility = View.VISIBLE
                     }
                     1 -> {
                         viewModel.setTransactionType(TransactionType.INCOME)
-                        editBinding.tilCuotas.visibility = View.GONE
-                        editBinding.tilInteres.visibility = View.GONE
+//                        editBinding.tilCuotas.visibility = View.GONE
+//                        editBinding.tilInteres.visibility = View.GONE
                     }
                 }
             }
@@ -288,10 +302,12 @@ class TransactionFragment : Fragment() {
         ).show()
     }
 
-    private fun showEditMode() {
+    private fun showEditMode(isNewTransaction: Boolean) {
         isEditMode = true
         listBinding.root.visibility = View.GONE
+        editBinding.btnDeleteTransaction.visibility = if (isNewTransaction) View.GONE else View.VISIBLE
         editBinding.root.visibility = View.VISIBLE
+
     }
 
     private fun showListMode() {
@@ -307,6 +323,7 @@ class TransactionFragment : Fragment() {
         editBinding.tilComment.editText?.text?.clear()
         editBinding.etCuotas.text?.clear()
         editBinding.etInteres.text?.clear()
+        editBinding.btnDeleteTransaction.visibility = View.GONE
         viewModel.resetEditFields()
     }
 

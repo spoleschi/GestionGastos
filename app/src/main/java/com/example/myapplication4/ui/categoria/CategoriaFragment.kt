@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication4.clases.Categoria
 import com.example.myapplication4.R
-import com.example.myapplication4.adapters.CategoriesAdapter
-import com.example.myapplication4.adapters.ColorPickerAdapter
+import com.example.myapplication4.ui.adapters.CategoriesAdapter
+import com.example.myapplication4.ui.adapters.ColorPickerAdapter
 import com.example.myapplication4.databinding.FragmentCategoriaBinding
 import com.example.myapplication4.databinding.FragmentCategoryEditBinding
 import com.example.myapplication4.repository.CategoryRepository

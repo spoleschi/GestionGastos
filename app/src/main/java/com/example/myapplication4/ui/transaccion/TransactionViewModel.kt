@@ -1,5 +1,6 @@
 package com.example.myapplication4.ui.transaccion
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.myapplication4.clases.Categoria
 import com.example.myapplication4.clases.Gasto
@@ -93,11 +94,11 @@ class TransactionViewModel(
             when (type) {
                 TransactionType.EXPENSE -> {
                     showExpenseCategories()
-//                    showExpenses()
+                    showExpenses()
                 }
                 TransactionType.INCOME -> {
                     showIncomeCategories()
-//                    showIncomes()
+                    showIncomes()
                 }
             }
         }
@@ -170,6 +171,18 @@ class TransactionViewModel(
 
             loadTransactions()
             resetEditFields()
+        }
+    }
+
+    fun deleteTransaction(transaction: Transaccion) {
+        viewModelScope.launch {
+            try {
+                transactionRepository.deleteTransaction(transaction)
+                loadTransactions()
+                resetEditFields()
+            } catch (e: Exception) {
+                 Log.e("TransactionViewModel", "Error al eliminar la transacción", e)
+            }
         }
     }
 
