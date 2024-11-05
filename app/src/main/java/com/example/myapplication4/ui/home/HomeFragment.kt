@@ -121,24 +121,27 @@ class HomeFragment : Fragment() {
 
             weekButton.setOnClickListener {
                 val today = LocalDate.now()
-                viewModel.setPeriod(today.minusWeeks(1), today)
+                val startOfWeek = today.minusWeeks(1)
+                viewModel.setPeriod(startOfWeek, today)
                 updatePeriodButtonStates(weekButton)
             }
 
             monthButton.setOnClickListener {
                 val today = LocalDate.now()
-                viewModel.setPeriod(today.withDayOfMonth(1), today)
+                val startOfMonth = today.minusMonths(1)
+                viewModel.setPeriod(startOfMonth, today)
                 updatePeriodButtonStates(monthButton)
             }
 
             yearButton.setOnClickListener {
                 val today = LocalDate.now()
-                viewModel.setPeriod(today.withDayOfYear(1), today)
+                val startOfYear = today.minusYears(1)
+                viewModel.setPeriod(startOfYear, today)
                 updatePeriodButtonStates(yearButton)
             }
 
             allButton.setOnClickListener {
-                viewModel.setPeriod(null, null)  // Pasar null para indicar sin restricción de fecha
+                viewModel.setPeriod(null, null)
                 updatePeriodButtonStates(allButton)
             }
 
