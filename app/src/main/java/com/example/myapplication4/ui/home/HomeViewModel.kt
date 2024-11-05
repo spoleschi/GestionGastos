@@ -16,7 +16,6 @@ import java.time.LocalDate
 class HomeViewModel(
     private val transactionRepository: TransactionRepository
 ) : ViewModel() {
-
     private val _categorySummaries = MutableLiveData<List<CategorySummary>>()
     val categorySummaries: LiveData<List<CategorySummary>> = _categorySummaries
 
@@ -26,11 +25,10 @@ class HomeViewModel(
     private val _tipoTransaccion = MutableLiveData<TipoTransaccion>()
     val tipoTransaccion: LiveData<TipoTransaccion> = _tipoTransaccion
 
-    private var startDate: LocalDate = LocalDate.now().withDayOfMonth(1)
-    private var endDate: LocalDate = LocalDate.now()
+    private var startDate: LocalDate? = null
+    private var endDate: LocalDate? = null
 
     private var currentTransactionsJob: Job? = null
-
 
     init {
         _tipoTransaccion.value = TipoTransaccion.GASTO
@@ -52,11 +50,13 @@ class HomeViewModel(
 
     private fun processTransactions(transactions: List<Transaccion>) {
         viewModelScope.launch {
-            // Filtrar las transacciones solo si los valores de startDate y endDate no son los predeterminados
-            val transaccionesFiltradas = if (startDate != LocalDate.MIN && endDate != LocalDate.MAX) {
-                transactions.filter { it.fecha in startDate..endDate }
+            val transaccionesFiltradas = if (startDate != null && endDate != null) {
+                transactions.filter { transaction ->
+                    transaction.fecha.isAfterOrEqual(startDate!!) &&
+                            transaction.fecha.isBeforeOrEqual(endDate!!)
+                }
             } else {
-                transactions  // No aplicar filtro de fechas si es todo
+                transactions
             }
 
             val total = transaccionesFiltradas.sumOf { it.monto.toDouble() }.toFloat()
@@ -85,16 +85,17 @@ class HomeViewModel(
     }
 
     fun setPeriod(start: LocalDate?, end: LocalDate?) {
-        if (start == null || end == null) {
-            // Indicar que no se debe aplicar el filtro de fechas
-            startDate = LocalDate.MIN
-            endDate = LocalDate.MAX
-        } else {
-            startDate = start
-            endDate = end
-        }
+        startDate = start
+        endDate = end
         observeTransactions()
     }
+
+    // Funciones de extensión para hacer las comparaciones de fechas más legibles
+    private fun LocalDate.isAfterOrEqual(other: LocalDate): Boolean =
+        this.isEqual(other) || this.isAfter(other)
+
+    private fun LocalDate.isBeforeOrEqual(other: LocalDate): Boolean =
+        this.isEqual(other) || this.isBefore(other)
 
     override fun onCleared() {
         super.onCleared()
@@ -113,7 +114,6 @@ class HomeViewModel(
         }
     }
 }
-
 enum class TipoTransaccion {
     GASTO, INGRESO
 }
