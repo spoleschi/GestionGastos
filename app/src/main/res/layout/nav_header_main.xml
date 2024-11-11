@@ -40,6 +40,6 @@
         android:textColor="@color/black"
         android:text="@string/nav_header_subtitle" />
 
-    <-- new Modification -->
+    <-- new Modification 2 -->
 
 </LinearLayout>
